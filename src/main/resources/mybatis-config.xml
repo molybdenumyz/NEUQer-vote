@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <settings>
+        <!--使用jdbc获取数据库自增id-->
+        <setting name="useGeneratedKeys" value="true"/>
+        <!--列别名替换别名-->
+        <setting name="useColumnLabel" value="true"/>
+        <setting name="cacheEnabled" value="false"/>
+        <!--驼峰命名-->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+    </settings>
+    <typeAliases>
+        <!--返回类型包-->
+        <package name="com.neuqer.voter.domain"/>
+    </typeAliases>
+    <!--sql映射文件-->
+    <mappers>
+        <mapper resource="mappers/UserMapper.xml"/>
+        <mapper resource="mappers/TokenMapper.xml"/>
+        <mapper resource="mappers/VoteMapper.xml"/>
+        <mapper resource="mappers/OptionMapper.xml"/>
+        <mapper resource="mappers/VoteRecordMapper.xml"/>
+        <mapper resource="mappers/VerifyCodeMapper.xml"/>
+        <mapper resource="mappers/adminMapper.xml"/>
+    </mappers>
+</configuration>

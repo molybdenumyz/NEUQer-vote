@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neuqer.voter.mapper.VoteRecordMapper">
+	<insert id="createVote" parameterType="com.neuqer.voter.domain.Vote" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO votes
+		(title, description, anonymous, participator_limit, visibility_limit, start_time, end_time, creator_id, created_at, updated_at, password,type,max)
+		VALUES
+		(#{title}, #{description}, #{anonymous}, #{participatorLimit}, #{visibilityLimit}, #{startTime}, #{endTime}, #{creatorId}, #{createdAt}, #{updatedAt}, #{password},#{type},#{max});
+	</insert>
+	<insert id="addRecord" parameterType="com.neuqer.voter.domain.VoteRecord" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		vote_records
+		(option_id, value, created_at, updated_at, voteId, userId)
+		 VALUES
+		(#{optionId},#{value},#{createAt},#{updateAt},#{voteId},#{userId})
+	</insert>
+
+	<select id="findRecord" parameterType="com.neuqer.voter.domain.VoteRecord">
+		SELECT *
+		FROM vote_records
+		WHERE vote_id = #{voteId} and user_id = #{userId} and type = #{type}
+	</select>
+</mapper>

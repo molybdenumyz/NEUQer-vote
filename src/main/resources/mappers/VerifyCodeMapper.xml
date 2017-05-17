@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neuqer.voter.mapper.VerifyCodeMapper">
+
+    <insert id="addVerifyCode" parameterType="com.neuqer.voter.domain.VerifyCode">
+        INSERT INTO verify_codes
+        (mobile, type, code,expire_at)
+        VALUES (${mobile}, ${type},${code},
+        ${expireAt})
+    </insert>
+
+    <select id="getVerifyCode" resultType="com.neuqer.voter.domain.VerifyCode" parameterType="com.neuqer.voter.domain.VerifyCode">
+        SELECT * FROM verify_codes
+        WHERE mobile = '${mobile}'
+        AND type = '${type}'
+    </select>
+
+    <update id="updateVerifyCode" parameterType="com.neuqer.voter.domain.VerifyCode">
+        UPDATE votecopy.verify_codes
+        SET expire_at= ${expireAt}
+        WHERE mobile = '${mobile}'
+        AND type = '${type}'
+    </update>
+</mapper>

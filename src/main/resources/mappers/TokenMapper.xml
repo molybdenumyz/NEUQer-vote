@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neuqer.voter.mapper.TokenMapper">
+    <select id="getTokenByUserId" resultType="Token">
+        SELECT * FROM token
+        WHERE user_id = #{userId};
+    </select>
+
+    <select id="getTokenByStr" resultType="Token">
+        SELECT * FROM token
+        WHERE token = #{tokenStr};
+    </select>
+
+    <insert id="createToken" parameterType="Token" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO token
+          (user_id,token,client,created_at,updated_at,expire_at,ip)
+        VALUES
+          (#{userId},#{token},#{client},#{createdAt},#{updatedAt},#{expireAt},#{ip});
+    </insert>
+
+    <update id="updateToken" parameterType="Token">
+        UPDATE token SET
+          token = #{token},
+          client = #{client},
+          updated_at = #{updatedAt},
+          expire_at = #{expireAt},
+          ip = #{ip}
+        WHERE
+          id = #{id};
+    </update>
+
+    <delete id="deleteToken">
+        DELETE FROM token WHERE id = #{id};
+    </delete>
+</mapper>

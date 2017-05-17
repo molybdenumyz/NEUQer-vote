@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neuqer.voter.mapper.VoteMapper">
+    <select id="getVote" resultType="com.neuqer.voter.domain.Vote">
+        SELECT *
+          FROM votes
+        WHERE id = #{id}
+          AND is_deleted = FALSE
+          AND visibility_limit = TRUE
+    </select>
+
+
+
+    <select id="getAllVote" resultType="com.neuqer.voter.domain.VoteNeed">
+        SELECT id,title,type,start_time,end_time,max,participator_num
+          FROM votes
+        WHERE is_deleted = FALSE
+        AND visibility_limit = TRUE
+    </select>
+
+
+    <update id="updateVoteParticipatorNum">
+        UPDATE votes SET
+          participator_num = participator_num + 1
+        WHERE id = #{id}
+    </update>
+
+
+    <select id="getCreator" resultType="Long">
+        SELECT creator_id
+          FROM votes
+        WHERE id = #{voteId}
+    </select>
+
+    <select id="isStart" resultType="Long">
+        SELECT start_time
+          FROM votes
+        WHERE id = #{id}
+    </select>
+
+    <select id="isEnd" resultType="Long">
+        SELECT end_time
+          FROM votes
+        WHERE id = #{id}
+    </select>
+
+    <update id="insertQaPath">
+        UPDATE votes
+        SET qa_path = #{qa_path}
+        WHERE id = #{id}
+    </update>
+    <insert id="createVote" parameterType="com.neuqer.voter.domain.Vote" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO votes
+        (title, description, anonymous, participator_limit, visibility_limit, start_time, end_time, creator_id, created_at, updated_at, password,type,max)
+        VALUES
+        (#{title}, #{description}, #{anonymous}, #{participatorLimit}, #{visibilityLimit}, #{startTime}, #{endTime}, #{creatorId}, #{createdAt}, #{updatedAt}, #{password},#{type},#{max});
+    </insert>
+
+</mapper>

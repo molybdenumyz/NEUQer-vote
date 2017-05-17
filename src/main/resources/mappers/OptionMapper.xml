@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neuqer.voter.mapper.OptionMapper">
+    <select id="listOptions" resultType="com.neuqer.voter.domain.Option">
+        SELECT id,vote_id,title,value,num
+          FROM problem_options
+        WHERE vote_id = #{voteId}
+          AND is_deleted = FALSE
+    </select>
+
+    <select id="getOption" resultType="com.neuqer.voter.domain.Option">
+        SELECT id,vote_id,title,value,num
+          FROM problem_options
+        WHERE id = #{optionId}
+          AND is_deleted = FALSE
+    </select>
+
+    <!--<insert id="createOptionList" parameterType=""></insert>-->
+    <insert id="createOption" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO problem_options
+          (vote_id, title,value)
+        VALUES
+         <foreach collection="list" item="item" separator=",">
+             (#{item.voteId},#{item.title},#{item.value})
+         </foreach>
+    </insert>
+
+    <update id="updateOptionValue">
+        UPDATE problem_options SET
+          value = value + #{optionValue}
+        WHERE id = #{optionId}
+    </update>
+
+    <update id="updateOptionChooseNum">
+        UPDATE problem_options SET
+          num = num + 1
+        WHERE id = #{optionId}
+    </update>
+
+    <update id="deleteOption">
+        UPDATE problem_options SET
+          is_deleted = TRUE
+        WHERE vote_id = #{voteId}
+    </update>
+
+    <update id="deleteOptionByProblemId">
+        UPDATE problem_options SET
+          is_deleted = TRUE
+        WHERE problem_id = #{problemId}
+    </update>
+</mapper>

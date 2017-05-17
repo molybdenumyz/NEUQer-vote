@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neuqer.voter.mapper.AdminMapper">
+    <select id="isAdmin" resultType="Integer">
+        SELECT status
+        FROM users
+        WHERE id = #{id}
+        AND status = 2
+        AND is_deleted = FALSE
+    </select>
+    <update id="upToAdmin">
+        UPDATE users
+        SET status = 2
+        WHERE id = #{id}
+    </update>
+    <select id="getVote" resultType="com.neuqer.voter.domain.Vote">
+        SELECT *
+        FROM votes
+        WHERE id = #{id}
+        AND is_deleted = FALSE
+    </select>
+
+    <select id="getVoteWithTrashed" resultType="com.neuqer.voter.domain.Vote">
+        SELECT *
+        FROM votes
+        WHERE id = #{id}
+    </select>
+
+    <select id="getVoteByTitle" resultType="com.neuqer.voter.domain.Vote">
+        SELECT *
+        FROM votes
+        WHERE title = #{title}
+    </select>
+
+    <select id="getVoteByCreator" resultType="com.neuqer.voter.domain.Vote">
+        SELECT *
+        FROM votes
+        WHERE creator_id = #{creatorId}
+    </select>
+    <select id="getAllVote" resultType="com.neuqer.voter.domain.VoteNeed">
+        SELECT votes.id,votes.title,votes.creator_id,votes.start_time,votes.end_time,type,votes.max,mobile,participator_num
+        FROM votes,users
+        WHERE votes.is_deleted = FALSE AND votes.creator_id = users.id
+        ORDER BY end_time
+    </select>
+    <insert id="createVote" parameterType="com.neuqer.voter.domain.Vote" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO votes
+        (title, description, anonymous, participator_limit, visibility_limit, start_time, end_time, creator_id, created_at, updated_at, password,type,max)
+        VALUES
+        (#{title}, #{description}, #{anonymous}, #{participatorLimit}, #{visibilityLimit}, #{startTime}, #{endTime}, #{creatorId}, #{createdAt}, #{updatedAt}, #{password},#{type},#{max});
+    </insert>
+
+    <update id="updateVoteTitle">
+        UPDATE votes SET
+        title = #{title}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateVotePassword">
+        UPDATE votes SET
+        password = #{password}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateVoteParticipatorLimit">
+        UPDATE votes SET
+        participator_limit = #{participatorLimit}
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateVoteParticipatorNum">
+        UPDATE votes SET
+        participator_num = participator_num + 1
+        WHERE id = #{id}
+    </update>
+
+    <update id="deleteVote">
+        UPDATE votes SET
+        is_deleted = TRUE
+        WHERE id = #{id}
+    </update>
+
+    <delete id="forceDeleteVote">
+        DELETE FROM votes
+        WHERE id = #{id}
+    </delete>
+
+    <select id="isParticipatorLimit" resultType="Integer">
+        SELECT participator_limit
+        FROM votes
+        WHERE id = #{id}
+    </select>
+
+    <select id="isVisibilityLimit" resultType="Boolean">
+        SELECT visibility_limit
+        FROM votes
+        WHERE id = #{id}
+    </select>
+
+    <select id="isAnonymous" resultType="Boolean">
+        SELECT anonymous
+        FROM votes
+        WHERE id = #{id}
+    </select>
+
+    <select id="getCreator" resultType="Long">
+        SELECT creator_id
+        FROM votes
+        WHERE id = #{voteId}
+    </select>
+
+    <select id="isStart" resultType="Long">
+        SELECT start_time
+        FROM votes
+        WHERE id = #{id}
+    </select>
+
+    <select id="isEnd" resultType="Long">
+        SELECT end_time
+        FROM votes
+        WHERE id = #{id}
+    </select>
+
+    <update id="insertQaPath">
+        UPDATE votes
+        SET qa_path = #{qa_path}
+        WHERE id = #{id}
+    </update>
+
+    <update id="disVisibility">
+        UPDATE votes
+        SET visibility_limit = ! visibility_limit
+        WHERE id = #{id}
+    </update>
+
+    <update id="updateVote" parameterType="com.neuqer.voter.domain.Vote">
+        UPDATE votes
+        SET
+            title =#{title},
+            start_time = #{startTime},
+            end_time = #{endTime}
+        WHERE id = #{id}
+    </update>
+    <update id="updateVoteOption" parameterType="com.neuqer.voter.domain.Option">
+        update problem_options set
+        title=#{title}
+        WHERE vote_id = #{voteId} AND id = #{id}
+    </update>
+
+</mapper>

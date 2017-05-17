@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.neuqer.voter.mapper.UserMapper">
+    <select id="getUser" resultType="User">
+        SELECT *
+          FROM users
+        WHERE id = #{id}
+          AND is_deleted = FALSE;
+    </select>
+
+    <select id="getUserWithTrashed" resultType="User">
+        SELECT *
+          FROM users
+        WHERE id = #{id};
+    </select>
+
+    <select id="getUserByMobile" resultType="User">
+        SELECT *
+          FROM users
+        WHERE mobile = #{mobile};
+    </select>
+
+    <!--设置获取自增主键-->
+    <insert id="createUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO users (name,mobile,password,status,created_at,updated_at)
+        VALUES (#{name},#{mobile},#{password},#{status},#{createdAt},#{updatedAt});
+    </insert>
+
+    <update id="updateUser" parameterType="User">
+        UPDATE users SET
+            name = #{user.name},
+            mobile = #{user.mobile},
+            password = #{user.password},
+            status = #{user.status},
+            updated_at = #{user.updatedAt}
+        WHERE id = #{user.id};
+    </update>
+
+    <update id="updateUserPassword">
+        UPDATE users SET
+          password = #{password}
+        WHERE mobile = #{mobile}
+    </update>
+
+    <update id="deleteUser">
+        UPDATE users SET
+          is_deleted = TRUE
+        WHERE id = #{id};
+    </update>
+
+    <delete id="forceDeleteUser">
+        DELETE FROM users
+        WHERE id = #{id};
+    </delete>
+
+</mapper>
