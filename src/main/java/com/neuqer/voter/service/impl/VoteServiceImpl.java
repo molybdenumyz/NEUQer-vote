@@ -56,9 +56,12 @@ public class VoteServiceImpl implements VoteService{
 
         for (VoteNeed vote:votes
                 ) {
+//            System.out.println(now);
+//            System.out.println("id: "+vote.getId()+" time: "+vote.getStartTime());
+
             if (now < vote.getStartTime())
                 vote.setFlag(0);
-            else if (vote.getStartTime() < now && vote.getEndTime() < now)
+            else if (now > vote.getStartTime() && vote.getEndTime() > now)
                 vote.setFlag(1);
             else
                 vote.setFlag(2);

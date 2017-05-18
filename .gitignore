@@ -34,5 +34,5 @@ mvnw.cmd
 .classpath
 logs/
 
-.xls
-.png
+*.xls
+*.png

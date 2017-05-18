@@ -3,6 +3,7 @@ package com.neuqer.voter.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.neuqer.voter.common.Utils;
 import com.neuqer.voter.domain.*;
+import com.neuqer.voter.dto.response.ValueRecordResponse;
 import com.neuqer.voter.exception.Auth.NoPermissonException;
 import com.neuqer.voter.exception.BaseException;
 import com.neuqer.voter.exception.UnknownException;
@@ -197,5 +198,23 @@ public class AdminServiceImpl implements AdminService{
             throw new UnknownException("统计失败");
 
         return null;
+    }
+
+    @Override
+    public ValueRecordResponse valueRecord(Vote vote) {
+        ValueRecordResponse response = new ValueRecordResponse();
+        response.setVoteId(vote.getId());
+        response.setTitle(vote.getTitle());
+        response.setType(vote.getType());
+
+        List<Option> optionList = optionMapper.listOptions(vote.getId());
+
+        List<VoteRecord> voteRecords = voteRecordMapper.findUserValue(vote.getId());
+
+        response.setOptions(optionList);
+
+        response.setValuelist(voteRecords);
+
+        return response;
     }
 }

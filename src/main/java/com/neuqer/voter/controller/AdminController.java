@@ -2,6 +2,7 @@ package com.neuqer.voter.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.github.pagehelper.PageInfo;
+import com.neuqer.voter.common.Excel;
 import com.neuqer.voter.common.Response;
 import com.neuqer.voter.common.Utils;
 import com.neuqer.voter.domain.*;
@@ -11,6 +12,7 @@ import com.neuqer.voter.exception.Auth.NoPermissonException;
 import com.neuqer.voter.exception.BaseException;
 import com.neuqer.voter.exception.Option.OptionNotBelongToVoteException;
 import com.neuqer.voter.exception.UnknownException;
+import com.neuqer.voter.exception.Vote.FormErrorException;
 import com.neuqer.voter.exception.Vote.TimeErrorException;
 import com.neuqer.voter.service.*;
 import org.slf4j.Logger;
@@ -21,6 +23,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,6 +49,7 @@ public class AdminController {
     private Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     public static int maxnumber = 100;
+
     /**
      * 创建投票
      *
@@ -60,53 +65,53 @@ public class AdminController {
 
         boolean admin = adminService.isAdmin(user.getId());
 
-        if (!admin){
+        if (!admin) {
             throw new NoPermissonException();
         }
 
-            long now = Utils.createTimeStamp();
+        long now = Utils.createTimeStamp();
 
-            if (now > voteCreateRequest.getStartTime())
-                throw  new TimeErrorException("开始时间需大于当前时间");
+        if (now > voteCreateRequest.getStartTime())
+            throw new TimeErrorException("开始时间需大于当前时间");
 
-            if (voteCreateRequest.getEndTime() <  voteCreateRequest.getStartTime())
-                throw new TimeErrorException("开始时间应小于结束时间");
+        if (voteCreateRequest.getEndTime() < voteCreateRequest.getStartTime())
+            throw new TimeErrorException("开始时间应小于结束时间");
 
-            Vote vote = new Vote();
-            vote.setTitle(voteCreateRequest.getTitle());
-            vote.setStartTime(voteCreateRequest.getStartTime());
-            vote.setEndTime(voteCreateRequest.getEndTime());
-
-
-            vote.setType(voteCreateRequest.getType());
-            if (voteCreateRequest.getType() == 1)
-                vote.setMax(1);
-            else if (voteCreateRequest.getType() == 2)
-                vote.setMax(voteCreateRequest.getMax());
-            else
-                vote.setMax(maxnumber);
-            vote.setParticipatorLimit(10000);
+        Vote vote = new Vote();
+        vote.setTitle(voteCreateRequest.getTitle());
+        vote.setStartTime(voteCreateRequest.getStartTime());
+        vote.setEndTime(voteCreateRequest.getEndTime());
 
 
-            vote.setPassword(null);
-            vote.setDescription(null);
-            vote.setVisibilityLimit(true);
-            vote.setAnonymous(false);
-            vote = adminService.createVote(user.getId(), vote);
+        vote.setType(voteCreateRequest.getType());
+        if (voteCreateRequest.getType() == 1)
+            vote.setMax(1);
+        else if (voteCreateRequest.getType() == 2)
+            vote.setMax(voteCreateRequest.getMax());
+        else
+            vote.setMax(maxnumber);
+        vote.setParticipatorLimit(10000);
 
-            List<String> optionCreateRequests = voteCreateRequest.getOptions();
 
-            List<Option> options = new ArrayList<>();
-            for (String optionCreateRequest : optionCreateRequests) {
-                Option newOption = new Option();
-                newOption.setTitle(optionCreateRequest);
-                newOption.setVoteId(vote.getId());
-                newOption.setValue(0);
-                options.add(newOption);
-            }
-            optionService.createOption(user.getId(), vote.getId(), options);
+        vote.setPassword(null);
+        vote.setDescription(null);
+        vote.setVisibilityLimit(true);
+        vote.setAnonymous(false);
+        vote = adminService.createVote(user.getId(), vote);
 
-            VoteCreateResponse response = new VoteCreateResponse(vote, optionCreateRequests);
+        List<String> optionCreateRequests = voteCreateRequest.getOptions();
+
+        List<Option> options = new ArrayList<>();
+        for (String optionCreateRequest : optionCreateRequests) {
+            Option newOption = new Option();
+            newOption.setTitle(optionCreateRequest);
+            newOption.setVoteId(vote.getId());
+            newOption.setValue(0);
+            options.add(newOption);
+        }
+        optionService.createOption(user.getId(), vote.getId(), options);
+
+        VoteCreateResponse response = new VoteCreateResponse(vote, optionCreateRequests);
 
         return new Response(0, response);
     }
@@ -125,7 +130,7 @@ public class AdminController {
         User user = (User) request.getAttribute("user");
         boolean admin = adminService.isAdmin(user.getId());
 
-        if (!admin){
+        if (!admin) {
             throw new NoPermissonException();
         }
 
@@ -134,7 +139,7 @@ public class AdminController {
         List<Option> options = optionService.listOptions(voteId);
 
 
-        VoteInfoResponse response = new VoteInfoResponse(vote,options);
+        VoteInfoResponse response = new VoteInfoResponse(vote, options);
 
         return new Response(0, response);
     }
@@ -152,14 +157,14 @@ public class AdminController {
                                  @RequestParam(required = false, defaultValue = "6") int rows) throws BaseException {
         User user = (User) request.getAttribute("user");
         boolean admin = adminService.isAdmin(user.getId());
-        if (!admin){
+        if (!admin) {
             throw new NoPermissonException();
         }
 
         List<VoteNeed> votes = adminService.getAllVote(page, rows);
 
         PageInfo response = new PageInfo<VoteNeed>(votes);
-        return new Response(0,response);
+        return new Response(0, response);
     }
 
 
@@ -176,7 +181,7 @@ public class AdminController {
         User user = (User) request.getAttribute("user");
         boolean admin = adminService.isAdmin(user.getId());
 
-        if (!admin){
+        if (!admin) {
             throw new NoPermissonException();
         }
         adminService.deleteVote(voteId);
@@ -186,13 +191,14 @@ public class AdminController {
 
     /**
      * 生成投票二维码
+     *
      * @param voteId
      * @param jsonObject
      * @return
      */
     @RequestMapping(path = "/{voteId}/encode", method = RequestMethod.POST)
     public Response enCode(@PathVariable("voteId") long voteId, @RequestBody JSONObject jsonObject) {
-        
+
         String path = qrCodeService.EnCode(voteId, jsonObject.getString("url"));
         EnCodeResponse response = new EnCodeResponse(path);
         return new Response(0, response);
@@ -200,33 +206,35 @@ public class AdminController {
 
     /**
      * 投票可见状态
+     *
      * @param voteId
      * @param request
      * @param jsonRequest
      * @return
      * @throws BaseException
      */
-    @RequestMapping(path = "/{voteId}/changeVisibility",method = RequestMethod.PUT)
-    public Response changeVisibility(@PathVariable("voteId") long voteId, HttpServletRequest request, @RequestBody JSONObject jsonRequest) throws  BaseException{
+    @RequestMapping(path = "/{voteId}/changeVisibility", method = RequestMethod.PUT)
+    public Response changeVisibility(@PathVariable("voteId") long voteId, HttpServletRequest request, @RequestBody JSONObject jsonRequest) throws BaseException {
         User user = (User) request.getAttribute("user");
         boolean admin = adminService.isAdmin(user.getId());
 
-        if (!admin){
+        if (!admin) {
             throw new NoPermissonException();
         }
-        if (!adminService.disVisibility(voteId)){
+        if (!adminService.disVisibility(voteId)) {
             throw new UnknownException();
         }
-        return new Response(0,null);
+        return new Response(0, null);
     }
 
     /**
      * 登陆后台
+     *
      * @param request
      * @return
      * @throws BaseException
      */
-    @RequestMapping(path = "/login",method = RequestMethod.POST)
+    @RequestMapping(path = "/login", method = RequestMethod.POST)
     public Response login(@RequestBody @Valid AdminLoginRequest request) throws BaseException {
 
         User user = adminService.loginAdmin(request.getMobile(), request.getPassword());
@@ -242,7 +250,7 @@ public class AdminController {
         User user = (User) request.getAttribute("user");
         boolean admin = adminService.isAdmin(user.getId());
 
-        if (!admin){
+        if (!admin) {
             throw new NoPermissonException();
         }
 
@@ -251,12 +259,12 @@ public class AdminController {
         List<Option> options = optionService.listOptions(voteId);
 
 
-        BeforeUpdateResponse response = new BeforeUpdateResponse(vote,options);
+        BeforeUpdateResponse response = new BeforeUpdateResponse(vote, options);
 
         return new Response(0, response);
     }
 
-    @RequestMapping(path = "/updateVote",method = RequestMethod.POST)
+    @RequestMapping(path = "/updateVote", method = RequestMethod.POST)
     public Response updateVoteInfo(@RequestBody @Valid UpdateVoteInfoRequest request) throws BaseException {
 
         long userId = request.getCreatorId();
@@ -266,8 +274,8 @@ public class AdminController {
             throw new NoPermissonException();
         long now = Utils.createTimeStamp();
 
-        Vote vote =  adminService.getVoteInfo(request.getId());
-        if (request.getStartTime() != 0){
+        Vote vote = adminService.getVoteInfo(request.getId());
+        if (request.getStartTime() != 0) {
             if (now > request.getStartTime())
                 throw new TimeErrorException("开始时间设置有误");
 
@@ -281,22 +289,49 @@ public class AdminController {
         vote.setTitle(request.getTitle());
         vote.setStartTime(request.getStartTime());
         vote.setEndTime(request.getEndTime());
-        for (Option option:request.getOptions()
-             ) {
-            if (option.getVoteId()!= vote.getId())
+        for (Option option : request.getOptions()
+                ) {
+            if (option.getVoteId() != vote.getId())
                 throw new OptionNotBelongToVoteException();
         }
-        if (!adminService.updateVote(vote,request.getOptions()))
+        if (!adminService.updateVote(vote, request.getOptions()))
             throw new UnknownException();
 
-        return new Response(0,null);
+        return new Response(0, null);
     }
-    @RequestMapping(path = "/{voteId}/record",method = RequestMethod.GET)
-    public Response record (@PathVariable("voteId") long voteId, HttpServletRequest request) throws BaseException {
-        Vote vote = adminService.getVoteInfo(voteId);
-        List<Option> options = adminService.record(vote);
-        RecordsResponse recordsResponse = new RecordsResponse(vote,options);
 
-        return  new Response(0,recordsResponse);
+    @RequestMapping(path = "/{voteId}/record", method = RequestMethod.GET)
+    public Response record(@PathVariable("voteId") long voteId, HttpServletRequest request) throws BaseException {
+
+        Vote vote = adminService.getVoteInfo(voteId);
+        if (vote.getType() == 3 || vote.getType() == 4) {
+            ValueRecordResponse response = adminService.valueRecord(vote);
+            return new Response(0, response);
+        }
+        List<Option> options = adminService.record(vote);
+
+
+        RecordsResponse recordsResponse = new RecordsResponse(vote, options);
+        return new Response(0, recordsResponse);
+    }
+
+    @RequestMapping(path = "/{voteId}/download", method = RequestMethod.GET)
+    public Response download(@PathVariable("voteId") long voteId) throws IOException, BaseException {
+        Excel excel = new Excel();
+        String path = "";
+        Vote vote = adminService.getVoteInfo(voteId);
+        if (vote.getType() == 1 || vote.getType() == 2) {
+           List<Option> options = adminService.record(vote);
+           RecordRequest request = new RecordRequest();
+           request.setOptions(options);
+           request.setId(vote.getId());
+           request.setType(vote.getType());
+           path = excel.objListToExcel(request);
+        } else if (vote.getType() == 3 || vote.getType() == 4){
+            ValueRecordResponse response = adminService.valueRecord(vote);
+            path = excel.ValueRecordExcel(response);
+        }
+        FilePathResponse filePathResponse = new FilePathResponse(path);
+        return new Response(0, filePathResponse);
     }
 }

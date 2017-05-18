@@ -1,6 +1,7 @@
 package com.neuqer.voter.service;
 
 import com.neuqer.voter.domain.*;
+import com.neuqer.voter.dto.response.ValueRecordResponse;
 import com.neuqer.voter.exception.BaseException;
 import com.neuqer.voter.exception.UnknownException;
 import com.neuqer.voter.exception.Vote.VoteNotExistException;
@@ -31,4 +32,5 @@ public interface AdminService {
 
     List<Option> record(Vote vote) throws UnknownException;
 
+    ValueRecordResponse valueRecord(Vote vote);
 }
