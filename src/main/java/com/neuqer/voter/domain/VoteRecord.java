@@ -10,21 +10,12 @@ public class VoteRecord {
 
     private int value;
 
-    private long createdAt;
+    private long createAt;
 
-    private long updatedAt;
+    private long updateAt;
 
     private long userId;
 
-    private int type;
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
 
     public long getUserId() {
         return userId;
@@ -55,26 +46,21 @@ public class VoteRecord {
     }
 
 
-
-    public long getCreatedAt() {
-        return createdAt;
+    public long getCreateAt() {
+        return createAt;
     }
 
-
-    public void setCreatedAt(long createdAt) {
-        this.createdAt = createdAt;
+    public void setCreateAt(long createAt) {
+        this.createAt = createAt;
     }
 
-
-    public long getUpdatedAt() {
-        return updatedAt;
+    public long getUpdateAt() {
+        return updateAt;
     }
 
-
-    public void setUpdatedAt(long updatedAt) {
-        this.updatedAt = updatedAt;
+    public void setUpdateAt(long updateAt) {
+        this.updateAt = updateAt;
     }
-
 
     public long getVoteId() {
         return voteId;
@@ -99,10 +85,9 @@ public class VoteRecord {
                 ", optionId=" + optionId +
                 ", voteId=" + voteId +
                 ", value=" + value +
-                ", createdAt=" + createdAt +
-                ", updatedAt=" + updatedAt +
+                ", createAt=" + createAt +
+                ", updateAt=" + updateAt +
                 ", userId=" + userId +
-                ", type=" + type +
                 '}';
     }
 }

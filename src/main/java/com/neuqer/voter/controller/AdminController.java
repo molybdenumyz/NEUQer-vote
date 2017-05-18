@@ -44,6 +44,7 @@ public class AdminController {
 
     private Logger logger = LoggerFactory.getLogger(AdminController.class);
 
+    public static int maxnumber = 100;
     /**
      * 创建投票
      *
@@ -75,9 +76,18 @@ public class AdminController {
             vote.setTitle(voteCreateRequest.getTitle());
             vote.setStartTime(voteCreateRequest.getStartTime());
             vote.setEndTime(voteCreateRequest.getEndTime());
+
+
             vote.setType(voteCreateRequest.getType());
-            vote.setMax(voteCreateRequest.getMax());
+            if (voteCreateRequest.getType() == 1)
+                vote.setMax(1);
+            else if (voteCreateRequest.getType() == 2)
+                vote.setMax(voteCreateRequest.getMax());
+            else
+                vote.setMax(maxnumber);
             vote.setParticipatorLimit(10000);
+
+
             vote.setPassword(null);
             vote.setDescription(null);
             vote.setVisibilityLimit(true);

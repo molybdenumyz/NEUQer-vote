@@ -68,10 +68,11 @@ public class VoteController {
     }
 
     @Transactional
-    @RequestMapping(path = "submit" ,method = RequestMethod.POST)
+    @RequestMapping(path = "/{voteId}/submit" ,method = RequestMethod.POST)
     public Response submit(@PathVariable("voteId") long voteId,@RequestBody SubmitRequest submitRequest,HttpServletRequest request) throws  BaseException{
 
         User user = (User) request.getAttribute("user");
+
         if (!voteService.submitVote(voteId,user.getId(),submitRequest.getRecords()))
             throw new UnknownException("提交投票错误");
 

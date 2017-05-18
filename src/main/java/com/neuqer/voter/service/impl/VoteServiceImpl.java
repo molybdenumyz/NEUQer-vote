@@ -83,11 +83,11 @@ public class VoteServiceImpl implements VoteService{
 
         int type = vote.getType();
         long now = Utils.createTimeStamp();
-        if (!(now > vote.getStartTime() && now <vote.getEndTime()))
-           throw new TimeErrorException("投票未开始或者已结束");
+//        if (!(now > vote.getStartTime() && now <vote.getEndTime()))
+//           throw new TimeErrorException("投票未开始或者已结束");
 
         //检查是否已经提交过
-        if (voteRecordMapper.findRecord(voteId,userId,vote.getType()) != null )
+        if (voteRecordMapper.findRecord(voteId,userId) != null )
             throw new HaveVotedException();
 
         int size = voteRecords.size();
@@ -100,8 +100,8 @@ public class VoteServiceImpl implements VoteService{
                     ) {
                 voteRecord.setUserId(userId);
                 voteRecord.setVoteId(voteId);
-                voteRecord.setCreatedAt(now);
-                voteRecord.setUpdatedAt(now);
+                voteRecord.setCreateAt(now);
+                voteRecord.setUpdateAt(now);
 
 
                 int row = voteRecordMapper.addRecord(voteRecord);
@@ -119,8 +119,8 @@ public class VoteServiceImpl implements VoteService{
                     ) {
 
                 voteRecord.setVoteId(voteId);
-                voteRecord.setCreatedAt(now);
-                voteRecord.setUpdatedAt(now);
+                voteRecord.setCreateAt(now);
+                voteRecord.setUpdateAt(now);
                 voteRecord.setUserId(userId);
 
                 int row = voteRecordMapper.addRecord(voteRecord);
@@ -140,8 +140,8 @@ public class VoteServiceImpl implements VoteService{
                     throw new FormErrorException("投票分数控制在十分之内");
 
                 voteRecord.setVoteId(voteId);
-                voteRecord.setCreatedAt(now);
-                voteRecord.setUpdatedAt(now);
+                voteRecord.setCreateAt(now);
+                voteRecord.setUpdateAt(now);
                 voteRecord.setUserId(userId);
 
                 int row = voteRecordMapper.addRecord(voteRecord);
@@ -165,8 +165,8 @@ public class VoteServiceImpl implements VoteService{
                     throw new FormErrorException("投票分数控制在百分之内");
 
                 voteRecord.setVoteId(voteId);
-                voteRecord.setCreatedAt(now);
-                voteRecord.setUpdatedAt(now);
+                voteRecord.setCreateAt(now);
+                voteRecord.setUpdateAt(now);
                 voteRecord.setUserId(userId);
 
                 int row = voteRecordMapper.addRecord(voteRecord);

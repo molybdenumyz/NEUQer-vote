@@ -11,14 +11,14 @@
 	<insert id="addRecord" parameterType="com.neuqer.voter.domain.VoteRecord" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO
 		vote_records
-		(option_id, value, created_at, updated_at, voteId, userId)
+		(option_id, value, created_at, updated_at, vote_id, user_id)
 		 VALUES
 		(#{optionId},#{value},#{createAt},#{updateAt},#{voteId},#{userId})
 	</insert>
 
-	<select id="findRecord" parameterType="com.neuqer.voter.domain.VoteRecord">
+	<select id="findRecord" parameterType="com.neuqer.voter.domain.VoteRecord" resultType="com.neuqer.voter.domain.VoteRecord">
 		SELECT *
 		FROM vote_records
-		WHERE vote_id = #{voteId} and user_id = #{userId} and type = #{type}
+		WHERE vote_id = #{voteId} and user_id = #{userId}
 	</select>
 </mapper>

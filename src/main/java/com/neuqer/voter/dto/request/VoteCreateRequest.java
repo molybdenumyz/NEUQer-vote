@@ -25,7 +25,6 @@ public class VoteCreateRequest {
     @NotNull
     private Integer type;
 
-    @NotNull
     private Integer max;
 
     private List<String> options;
