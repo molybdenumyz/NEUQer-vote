@@ -14,6 +14,7 @@ import com.neuqer.voter.exception.Option.OptionNotBelongToVoteException;
 import com.neuqer.voter.exception.UnknownException;
 import com.neuqer.voter.exception.Vote.FormErrorException;
 import com.neuqer.voter.exception.Vote.TimeErrorException;
+import com.neuqer.voter.exception.Vote.VoteNotExistException;
 import com.neuqer.voter.service.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +49,7 @@ public class AdminController {
 
     private Logger logger = LoggerFactory.getLogger(AdminController.class);
 
-    public static int maxnumber = 100;
+    final static int MAX_NUMBER = 100;
 
     /**
      * 创建投票
@@ -89,7 +90,7 @@ public class AdminController {
         else if (voteCreateRequest.getType() == 2)
             vote.setMax(voteCreateRequest.getMax());
         else
-            vote.setMax(maxnumber);
+            vote.setMax(MAX_NUMBER);
         vote.setParticipatorLimit(10000);
 
 
@@ -300,6 +301,7 @@ public class AdminController {
         return new Response(0, null);
     }
 
+
     @RequestMapping(path = "/{voteId}/record", method = RequestMethod.GET)
     public Response record(@PathVariable("voteId") long voteId, HttpServletRequest request) throws BaseException {
 
@@ -315,23 +317,45 @@ public class AdminController {
         return new Response(0, recordsResponse);
     }
 
+
     @RequestMapping(path = "/{voteId}/download", method = RequestMethod.GET)
     public Response download(@PathVariable("voteId") long voteId) throws IOException, BaseException {
         Excel excel = new Excel();
         String path = "";
         Vote vote = adminService.getVoteInfo(voteId);
         if (vote.getType() == 1 || vote.getType() == 2) {
-           List<Option> options = adminService.record(vote);
-           RecordRequest request = new RecordRequest();
-           request.setOptions(options);
-           request.setId(vote.getId());
-           request.setType(vote.getType());
-           path = excel.objListToExcel(request);
-        } else if (vote.getType() == 3 || vote.getType() == 4){
+            List<Option> options = adminService.record(vote);
+            RecordRequest request = new RecordRequest();
+            request.setOptions(options);
+            request.setId(vote.getId());
+            request.setType(vote.getType());
+            path = excel.objListToExcel(request);
+        } else if (vote.getType() == 3 || vote.getType() == 4) {
             ValueRecordResponse response = adminService.valueRecord(vote);
             path = excel.ValueRecordExcel(response);
         }
         FilePathResponse filePathResponse = new FilePathResponse(path);
         return new Response(0, filePathResponse);
     }
+
+
+    @RequestMapping(path = "/findLike", method = RequestMethod.POST)
+    public Response findLike(@RequestBody @Valid FindLikeRequest findLikeRequest,HttpServletRequest request,
+                             @RequestParam(required = false, defaultValue = "1") int page,
+                             @RequestParam(required = false, defaultValue = "6") int rows) throws VoteNotExistException, NoPermissonException {
+        User user = (User) request.getAttribute("user");
+
+        boolean admin = adminService.isAdmin(user.getId());
+        if (!admin) {
+            throw new NoPermissonException();
+        }
+        System.out.println(findLikeRequest.getFlag());
+        List<VoteNeed> votes = adminService.findLike(page,rows,findLikeRequest);
+
+        PageInfo response = new PageInfo<VoteNeed>(votes);
+
+        return new Response(0, response);
+
+    }
+
 }

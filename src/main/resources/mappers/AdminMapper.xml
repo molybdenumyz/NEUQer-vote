@@ -39,11 +39,35 @@
         WHERE creator_id = #{creatorId}
     </select>
     <select id="getAllVote" resultType="com.neuqer.voter.domain.VoteNeed">
-        SELECT votes.id,votes.title,votes.creator_id,votes.start_time,votes.end_time,type,votes.max,mobile,participator_num
+        SELECT votes.id,votes.title,votes.creator_id,votes.start_time,votes.end_time,type,votes.max,mobile,participator_num,votes.updated_at
         FROM votes,users
         WHERE votes.is_deleted = FALSE AND votes.creator_id = users.id
         ORDER BY end_time
     </select>
+    
+    <select id="findLike" parameterType="com.neuqer.voter.dto.request.FindLikeRequest" resultType="com.neuqer.voter.domain.VoteNeed">
+        SELECT votes.id,votes.title,start_time,end_time,votes.updated_at,mobile,visibility_limit,max,type
+        FROM votes,users
+        <where>
+            <if test='title != null'>title LIKE  CONCAT('%',#{title},'%')</if>
+            <if test="createTimeFrom!=-1"> AND votes.created_at &gt; #{createTimeFrom}</if>
+            <if test="createTimeTo != -1">AND votes.created_at &lt; #{createTimeTo}</if>
+            <if test="startTimeFrom != -1"> AND start_time &gt; #{startTimeFrom}</if>
+            <if test="startTimeTo != -1"> AND start_time &lt; #{startTimeTo}</if>
+            <if test="visibility != -1">AND visibility_limit = #{visibility}</if>
+            <if test="mobile != null"> AND votes.creator_id = users.id AND mobile LIKE CONCAT('%',#{mobile},'%') </if>
+            <if test="flag == 0 ">
+                AND #{now} &lt; start_time
+            </if>
+            <if test="flag == 1">
+                AND #{now} &gt; start_time AND #{now} &lt; end_time
+            </if>
+            <if test="flag == 2">
+                AND #{now} &gt; end_time
+            </if>
+        </where>
+    </select>
+    
     <insert id="createVote" parameterType="com.neuqer.voter.domain.Vote" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO votes
         (title, description, anonymous, participator_limit, visibility_limit, start_time, end_time, creator_id, created_at, updated_at, password,type,max)

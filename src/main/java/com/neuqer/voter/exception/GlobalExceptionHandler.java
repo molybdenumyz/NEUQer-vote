@@ -34,7 +34,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
             MethodArgumentNotValidException.class,
-            MissingPathVariableException.class
+            MissingPathVariableException.class,
+            org.springframework.dao.DuplicateKeyException.class
     })
     @ResponseBody
     public Response handleDefaultException(Exception e) {

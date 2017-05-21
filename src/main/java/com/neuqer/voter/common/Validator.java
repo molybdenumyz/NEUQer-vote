@@ -28,6 +28,8 @@ public class Validator {
     public static boolean validatorType(int type) {
         List<Integer> allTypes = new ArrayList<Integer>() {{
             add(1);
+            add(2);
+            add(3);
         }};
         return allTypes.contains(type);
     }

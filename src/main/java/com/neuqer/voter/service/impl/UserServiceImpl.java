@@ -3,6 +3,7 @@ package com.neuqer.voter.service.impl;
 import com.neuqer.voter.common.Utils;
 import com.neuqer.voter.domain.Token;
 import com.neuqer.voter.domain.User;
+import com.neuqer.voter.domain.Vote;
 import com.neuqer.voter.dto.response.UserLoginResponse;
 import com.neuqer.voter.exception.BaseException;
 import com.neuqer.voter.exception.UnknownException;
@@ -10,6 +11,7 @@ import com.neuqer.voter.exception.User.MobileExistedException;
 import com.neuqer.voter.exception.User.PasswordErrorException;
 import com.neuqer.voter.exception.User.UserNotExistException;
 import com.neuqer.voter.mapper.UserMapper;
+import com.neuqer.voter.mapper.VoteMapper;
 import com.neuqer.voter.service.TokenService;
 import com.neuqer.voter.service.UserService;
 import org.mindrot.jbcrypt.BCrypt;
@@ -24,6 +26,8 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired VoteMapper voteMapper;
 
     @Autowired
     private TokenService tokenService;
@@ -78,9 +82,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean forgetPassword(String mobile, String password) throws BaseException {
 
-        /**
-         * 由于无邮件系统，暂由前端完成验证码的校验
-         */
         User user = userMapper.getUserByMobile(mobile);
 
         if (user == null) {
@@ -89,5 +90,6 @@ public class UserServiceImpl implements UserService {
             return userMapper.updateUserPassword(mobile, BCrypt.hashpw(password, BCrypt.gensalt())) == 1;
         }
     }
+
 
 }

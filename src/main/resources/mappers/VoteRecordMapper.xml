@@ -23,7 +23,7 @@
 	</select>
 
 	<select id="findUserValue" resultType="com.neuqer.voter.domain.VoteRecord">
-		SELECT option_id,vote_id
+		SELECT *
 		FROM  vote_records
 		WHERE vote_id = #{voteId}
 	</select>

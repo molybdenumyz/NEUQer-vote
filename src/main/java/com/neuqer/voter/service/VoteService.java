@@ -4,6 +4,7 @@ import com.neuqer.voter.domain.Vote;
 import com.neuqer.voter.domain.VoteNeed;
 import com.neuqer.voter.domain.VoteRecord;
 import com.neuqer.voter.exception.BaseException;
+import com.neuqer.voter.exception.Vote.VoteNotExistException;
 
 import java.util.List;
 
@@ -22,4 +23,5 @@ public interface VoteService {
 
     boolean submitVote(long voteId, long userId,List<VoteRecord> voteRecords) throws BaseException;
 
+    List<VoteNeed> haveVoted(long userId,int page, int rows) throws VoteNotExistException;
 }

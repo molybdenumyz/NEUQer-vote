@@ -22,6 +22,7 @@
         WHERE mobile = #{mobile};
     </select>
 
+
     <!--设置获取自增主键-->
     <insert id="createUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO users (name,mobile,password,status,created_at,updated_at)
@@ -34,7 +35,8 @@
             mobile = #{user.mobile},
             password = #{user.password},
             status = #{user.status},
-            updated_at = #{user.updatedAt}
+            updated_at = #{user.updatedAt},
+            sex = #{user.sex}
         WHERE id = #{user.id};
     </update>
 
@@ -54,5 +56,6 @@
         DELETE FROM users
         WHERE id = #{id};
     </delete>
+
 
 </mapper>

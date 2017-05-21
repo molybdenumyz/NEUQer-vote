@@ -4,6 +4,8 @@ import com.neuqer.voter.common.Utils;
 import com.neuqer.voter.domain.Option;
 import com.neuqer.voter.domain.UpdateVote;
 import com.neuqer.voter.domain.Vote;
+import com.neuqer.voter.domain.VoteNeed;
+import com.neuqer.voter.dto.request.FindLikeRequest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -44,6 +47,22 @@ public class AdminMapperTest
 
 
         adminMapper.updateVoteOption(option);
+
+    }
+    @Test
+    public void findLikeTest(){
+
+        FindLikeRequest findLikeRequest;
+
+        findLikeRequest = new FindLikeRequest();
+
+        findLikeRequest.setTitle("T");
+
+        findLikeRequest.setMobile("132573");
+
+        List<VoteNeed> list = adminMapper.findLike(findLikeRequest);
+
+        System.out.println(list);
 
     }
 }

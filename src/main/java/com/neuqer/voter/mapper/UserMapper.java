@@ -1,6 +1,7 @@
 package com.neuqer.voter.mapper;
 
 import com.neuqer.voter.domain.User;
+import com.neuqer.voter.domain.Vote;
 import org.apache.ibatis.annotations.Param;
 
 /**

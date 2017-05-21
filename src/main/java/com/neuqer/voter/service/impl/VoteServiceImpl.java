@@ -56,9 +56,6 @@ public class VoteServiceImpl implements VoteService{
 
         for (VoteNeed vote:votes
                 ) {
-//            System.out.println(now);
-//            System.out.println("id: "+vote.getId()+" time: "+vote.getStartTime());
-
             if (now < vote.getStartTime())
                 vote.setFlag(0);
             else if (now > vote.getStartTime() && vote.getEndTime() > now)
@@ -77,7 +74,7 @@ public class VoteServiceImpl implements VoteService{
 
     @Override
     public boolean submitVote(long voteId,long userId,List<VoteRecord> voteRecords) throws BaseException {
-       //检查投票时间
+        //检查投票时间
         //检查投票可见性
         //检查是否已经删除
         Vote vote = voteMapper.getVote(voteId);
@@ -192,5 +189,26 @@ public class VoteServiceImpl implements VoteService{
             throw new UnknownException("更新参与人数失败");
 
         return true;
+    }
+
+    @Override
+    public List<VoteNeed> haveVoted(long userId,int page, int rows) throws VoteNotExistException {
+        PageHelper.startPage(page, rows);
+
+        List<VoteNeed> votes = voteMapper.haveVoted(userId);
+        long now = Utils.createTimeStamp();
+
+        for (VoteNeed vote:votes
+                ) {
+
+            if (now < vote.getStartTime())
+                vote.setFlag(0);
+            else if (now > vote.getStartTime() && vote.getEndTime() > now)
+                vote.setFlag(1);
+            else
+                vote.setFlag(2);
+        }
+
+        return votes;
     }
 }

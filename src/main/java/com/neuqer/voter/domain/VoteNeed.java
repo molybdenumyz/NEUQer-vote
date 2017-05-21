@@ -10,11 +10,19 @@ public class VoteNeed {
     private long endTime;
     private int type;
     private int max;
+    private long updatedAt;
     private String mobile;
     private int participatorNum;
     private Integer flag;
 
 
+    public long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(long updatedAt) {
+        this.updatedAt = updatedAt;
+    }
 
     public int getParticipatorNum() {
         return participatorNum;

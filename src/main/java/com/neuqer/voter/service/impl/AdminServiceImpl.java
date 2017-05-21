@@ -3,6 +3,7 @@ package com.neuqer.voter.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.neuqer.voter.common.Utils;
 import com.neuqer.voter.domain.*;
+import com.neuqer.voter.dto.request.FindLikeRequest;
 import com.neuqer.voter.dto.response.ValueRecordResponse;
 import com.neuqer.voter.exception.Auth.NoPermissonException;
 import com.neuqer.voter.exception.BaseException;
@@ -213,8 +214,41 @@ public class AdminServiceImpl implements AdminService{
 
         response.setOptions(optionList);
 
-        response.setValuelist(voteRecords);
+        response.setValueList(voteRecords);
 
         return response;
+    }
+
+    @Override
+    public List<VoteNeed> findLike(int page, int rows, FindLikeRequest request) throws VoteNotExistException {
+        PageHelper.startPage(page, rows);
+
+        long now = Utils.createTimeStamp();
+
+        request.setNow(now);
+
+        List<VoteNeed> votes = voteMapper.findLike(request);
+
+
+
+        if (votes == null) {
+            throw new VoteNotExistException();
+        }
+        int flag = request.getFlag();
+
+
+            for (VoteNeed vote:votes
+                    ) {
+                if (now < vote.getStartTime())
+                    vote.setFlag(0);
+                else if (vote.getStartTime() < now && vote.getEndTime() > now)
+                    vote.setFlag(1);
+                else
+                    vote.setFlag(2);
+            }
+
+
+
+        return votes;
     }
 }

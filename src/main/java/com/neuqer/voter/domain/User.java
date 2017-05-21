@@ -5,19 +5,13 @@ package com.neuqer.voter.domain;
  */
 public class User {
 
-    /**
-     * 用户id
-     */
 
     private long id;
-
-    /**
-     * 用户昵称
-     */
     private String name;
     private String mobile;
     private String password;
     private int status;
+    private String sex;
     private long createdAt;
     private long updatedAt;
     private boolean isDeleted;
@@ -84,5 +78,13 @@ public class User {
 
     public void setIsDeleted(boolean deleted) {
         isDeleted = deleted;
+    }
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
     }
 }

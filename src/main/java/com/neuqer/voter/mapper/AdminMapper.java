@@ -4,6 +4,7 @@ import com.neuqer.voter.domain.Option;
 import com.neuqer.voter.domain.UpdateVote;
 import com.neuqer.voter.domain.Vote;
 import com.neuqer.voter.domain.VoteNeed;
+import com.neuqer.voter.dto.request.FindLikeRequest;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -47,4 +48,6 @@ public interface AdminMapper {
     Integer updateVote(Vote vote);
 
     Integer updateVoteOption(Option option);
+
+    List<VoteNeed> findLike(FindLikeRequest findLikeRequest);
 }

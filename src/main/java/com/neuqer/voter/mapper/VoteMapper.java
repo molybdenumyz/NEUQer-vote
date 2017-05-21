@@ -23,4 +23,6 @@ public interface VoteMapper {
     Integer insertQaPath(@Param("qa_path") String qa_path,@Param("id") long id);
 
     Integer updateVoteParticipatorNum(@Param("id") long id);
+
+    List<VoteNeed> haveVoted(@Param("userId") long userId);
 }

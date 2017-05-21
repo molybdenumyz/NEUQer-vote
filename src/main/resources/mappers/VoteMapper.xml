@@ -2,6 +2,13 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.neuqer.voter.mapper.VoteMapper">
+
+    <select id="haveVoted" resultType="com.neuqer.voter.domain.VoteNeed">
+        SELECT name,participator_num,start_time,end_time,"max",votes.id,votes.updated_at,votes.type
+        FROM votes,users,vote_records
+        WHERE vote_records.user_id = #{userId} and vote_records.vote_id = votes.id and creator_id = users.id
+    </select>
+
     <select id="getVote" resultType="com.neuqer.voter.domain.Vote">
         SELECT *
           FROM votes
@@ -33,17 +40,6 @@
         WHERE id = #{voteId}
     </select>
 
-    <select id="isStart" resultType="Long">
-        SELECT start_time
-          FROM votes
-        WHERE id = #{id}
-    </select>
-
-    <select id="isEnd" resultType="Long">
-        SELECT end_time
-          FROM votes
-        WHERE id = #{id}
-    </select>
 
     <update id="insertQaPath">
         UPDATE votes

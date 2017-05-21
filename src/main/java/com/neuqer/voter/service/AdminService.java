@@ -1,6 +1,7 @@
 package com.neuqer.voter.service;
 
 import com.neuqer.voter.domain.*;
+import com.neuqer.voter.dto.request.FindLikeRequest;
 import com.neuqer.voter.dto.response.ValueRecordResponse;
 import com.neuqer.voter.exception.BaseException;
 import com.neuqer.voter.exception.UnknownException;
@@ -33,4 +34,6 @@ public interface AdminService {
     List<Option> record(Vote vote) throws UnknownException;
 
     ValueRecordResponse valueRecord(Vote vote);
+
+    List<VoteNeed> findLike(int page, int rows, FindLikeRequest request) throws VoteNotExistException;
 }

@@ -113,7 +113,7 @@ public class Excel {
             HSSFCell cell_2 = hssfRow.createCell(1);
             cell_2.setCellValue(option.getTitle());
 
-            for (VoteRecord record:response.getValuelist()
+            for (VoteRecord record:response.getValueList()
                  ) {
                 if (record.getOptionId() == option.getId()){
                     HSSFCell topCell = row2.createCell(j);

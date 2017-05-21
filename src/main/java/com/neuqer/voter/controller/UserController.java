@@ -13,10 +13,7 @@ import com.neuqer.voter.dto.response.UserLoginResponse;
 import com.neuqer.voter.dto.response.VerifyResponse;
 import com.neuqer.voter.exception.BaseException;
 import com.neuqer.voter.exception.UnknownException;
-import com.neuqer.voter.exception.User.IlegaleMobileException;
-import com.neuqer.voter.exception.User.MobileExistedException;
-import com.neuqer.voter.exception.User.PasswordErrorException;
-import com.neuqer.voter.exception.User.UserExistedException;
+import com.neuqer.voter.exception.User.*;
 import com.neuqer.voter.exception.VerifyCode.IllegalTypeException;
 import com.neuqer.voter.exception.VerifyCode.IllegalVerfyCodeException;
 import com.neuqer.voter.service.TokenService;
@@ -65,11 +62,15 @@ public class UserController {
             throw new IllegalTypeException();
 
         User user = userService.getUserByMobile(mobile);
+
         if (user != null)
             throw new MobileExistedException();
+
         VerifyResponse response = new VerifyResponse("1234");
+
         if (verifyCodeService.sendVerifyCode(mobile, type))
             return new Response(0,response);
+
         throw new UnknownException();
     }
     /**
@@ -173,8 +174,17 @@ public class UserController {
     public Response resetPassword(HttpServletRequest request, @RequestBody JSONObject jsonRequest) throws BaseException {
         String oldPassword = jsonRequest.getString("oldPassword");
         String newPassword = jsonRequest.getString("newPassword");
+        String code = jsonRequest.getString("code");
 
         User user = (User) request.getAttribute("user");
+        String mobile = user.getMobile();
+
+
+        /**
+         * 验证验证码
+         */
+        if (!verifyCodeService.checkVerifyCode(mobile,2,code))
+            throw new IllegalVerfyCodeException();
 
         if (!BCrypt.checkpw(oldPassword, user.getPassword())) {
             throw new PasswordErrorException();
@@ -197,16 +207,18 @@ public class UserController {
      * @throws BaseException 基础异常
      */
 
-    @RequestMapping(path = "/nickname", method = RequestMethod.PUT)
+    @RequestMapping(path = "/changeSex", method = RequestMethod.PUT)
     public Response resetNickName(HttpServletRequest request, @RequestBody JSONObject jsonRequest) throws BaseException {
-        String newName = jsonRequest.getString("newName");
+        String newSex = jsonRequest.getString("newSex");
 
         User user = (User) request.getAttribute("user");
-
-        user.setName(newName);
+        if (newSex == "male" || newSex == "female")
+            user.setSex(newSex);
+        else
+            throw new IlegaleSexException();
 
         if (!userService.updateUser(user)) {
-            throw new UnknownException("fail to update user's nickname");
+            throw new UnknownException("fail to update user's sex");
         }
 
         return new Response(0, null);
@@ -223,6 +235,13 @@ public class UserController {
     public Response forgetPassword(@RequestBody JSONObject jsonRequest) throws BaseException {
         String mobile = jsonRequest.getString("mobile");
         String newPassword = jsonRequest.getString("newPassword");
+        String code = jsonRequest.getString("code");
+
+        /**
+         * 验证验证码
+         */
+        if (!verifyCodeService.checkVerifyCode(mobile,3,code))
+            throw new IllegalVerfyCodeException();
 
         if (!userService.forgetPassword(mobile, newPassword)) {
             throw new UnknownException("fail to update user's password");
@@ -230,4 +249,6 @@ public class UserController {
 
         return new Response(0, null);
     }
+
+
 }

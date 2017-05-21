@@ -1,5 +1,7 @@
 package com.neuqer.voter.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.neuqer.voter.common.Response;
 import com.neuqer.voter.domain.Option;
@@ -12,6 +14,7 @@ import com.neuqer.voter.dto.response.VoteInfoResponse;
 import com.neuqer.voter.exception.Auth.NoPermissonException;
 import com.neuqer.voter.exception.BaseException;
 import com.neuqer.voter.exception.UnknownException;
+import com.neuqer.voter.exception.Vote.VoteNotExistException;
 import com.neuqer.voter.service.OptionService;
 import com.neuqer.voter.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,4 +81,20 @@ public class VoteController {
 
         return new Response(0,null);
     }
+
+    @RequestMapping(path = "haveVoted",method = RequestMethod.GET)
+    public Response haveVoted(HttpServletRequest request,@RequestParam(required = false,defaultValue = "1") int page,
+                              @RequestParam(required = false,defaultValue = "4") int rows) throws VoteNotExistException {
+
+        User user = (User) request.getAttribute("user");
+
+        long userId = user.getId();
+
+        List<VoteNeed> voteList = voteService.haveVoted(userId,page,rows);
+
+        PageInfo response = new PageInfo<VoteNeed>(voteList);
+
+        return new Response(0,response);
+    }
+
 }

@@ -9,7 +9,7 @@ import java.util.List;
  * Created by yinzhe on 17/5/19.
  */
 public class ValueRecordResponse {
-    private List<VoteRecord> valuelist;
+    private List<VoteRecord> valueList;
 
     private List<Option>options;
 
@@ -20,13 +20,12 @@ public class ValueRecordResponse {
     private int type;
 
 
-
-    public void setValuelist(List<VoteRecord> valuelist) {
-        this.valuelist = valuelist;
+    public List<VoteRecord> getValueList() {
+        return valueList;
     }
 
-    public List<VoteRecord> getValuelist() {
-        return valuelist;
+    public void setValueList(List<VoteRecord> valueList) {
+        this.valueList = valueList;
     }
 
     public List<Option> getOptions() {

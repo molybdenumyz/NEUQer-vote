@@ -36,12 +36,18 @@ public class VerifyCodeServiceImpl implements VerifyCodeService{
     public boolean sendVerifyCode(String mobile,int type) throws UserNotExistException, UserExistedException {
         //String code  = Utils.createVerifyCode(); 假装在发送验证码
         String code = "1234";
+        User user = userService.getUserByMobile(mobile);
         if(type == 1) {
-            User user = userService.getUserByMobile(mobile);
+
             if (user != null) {
                 if (user.getStatus() != 0)
                 throw new UserExistedException();
             }
+        }
+        if(type == 2 || type == 3)//修改用户密码,忘记密码
+        {
+            if (user == null)
+                throw new UserNotExistException();
         }
 
         return updateVerifyCode(mobile,type,code);
@@ -54,13 +60,13 @@ public class VerifyCodeServiceImpl implements VerifyCodeService{
         VerifyCode verifyCode = verifyCodeMapper.getVerifyCode(checkVerifyCode);
         if (verifyCode == null)
             throw new IllegalVerfyCodeException();
-        System.out.println("1");
+
         if (!verifyCode.getCode().equals(code))
             throw new IllegalVerfyCodeException();
-        System.out.println("2");
+
         if (verifyCode.getExpireAt() < Utils.createTimeStamp())
             throw new VerifyCodeTimeOutException();
-        System.out.println("3");
+
         return true;
     }
 
