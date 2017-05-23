@@ -48,6 +48,7 @@ public class TokenInterceptor implements HandlerInterceptor {
         add("/admin/login");
         add("/vote/info");
         add("/vote/all");
+        add("/user/forget");
     }};
 
     @Override

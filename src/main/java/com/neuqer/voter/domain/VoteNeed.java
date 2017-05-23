@@ -14,7 +14,15 @@ public class VoteNeed {
     private String mobile;
     private int participatorNum;
     private Integer flag;
+    private int visibilityLimit;
 
+    public int getVisibility() {
+        return visibilityLimit;
+    }
+
+    public void setVisibilityLimit(int visibilityLimit) {
+        this.visibilityLimit = visibilityLimit;
+    }
 
     public long getUpdatedAt() {
         return updatedAt;

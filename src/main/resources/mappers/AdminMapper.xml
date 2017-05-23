@@ -49,13 +49,14 @@
         SELECT votes.id,votes.title,start_time,end_time,votes.updated_at,mobile,visibility_limit,max,type
         FROM votes,users
         <where>
-            <if test='title != null'>title LIKE  CONCAT('%',#{title},'%')</if>
+            votes.creator_id = users.id
+            <if test='title != null'>AND title LIKE  CONCAT('%',#{title},'%')</if>
             <if test="createTimeFrom!=-1"> AND votes.created_at &gt; #{createTimeFrom}</if>
             <if test="createTimeTo != -1">AND votes.created_at &lt; #{createTimeTo}</if>
             <if test="startTimeFrom != -1"> AND start_time &gt; #{startTimeFrom}</if>
             <if test="startTimeTo != -1"> AND start_time &lt; #{startTimeTo}</if>
             <if test="visibility != -1">AND visibility_limit = #{visibility}</if>
-            <if test="mobile != null"> AND votes.creator_id = users.id AND mobile LIKE CONCAT('%',#{mobile},'%') </if>
+            <if test="mobile != null">AND mobile LIKE CONCAT('%',#{mobile},'%') </if>
             <if test="flag == 0 ">
                 AND #{now} &lt; start_time
             </if>

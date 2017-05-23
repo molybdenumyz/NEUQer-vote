@@ -16,7 +16,7 @@ public class Validator {
      * @return
      */
     public static boolean validateMobile(String mobile) {
-        String pattern = "^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9])\\d{8}$";
+        String pattern = "^(13[0-9]|14[5|7]|15[0|1|2|3|5|6|7|8|9]|18[0|1|2|3|5|6|7|8|9]|17[0|1|3|6|7])\\d{8}$";
 
         Pattern regex = Pattern.compile(pattern);
         Matcher matcher = regex.matcher(mobile);
@@ -30,6 +30,7 @@ public class Validator {
             add(1);
             add(2);
             add(3);
+            add(4);
         }};
         return allTypes.contains(type);
     }

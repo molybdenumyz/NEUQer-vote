@@ -87,8 +87,9 @@ public class VoteServiceImpl implements VoteService{
 //           throw new TimeErrorException("投票未开始或者已结束");
 
         //检查是否已经提交过
-        if (voteRecordMapper.findRecord(voteId,userId) != null )
-            throw new HaveVotedException();
+       if ( voteRecordMapper.findRecord(voteId,userId).size()!= 0 )
+           throw new HaveVotedException();
+
 
         int size = voteRecords.size();
 
@@ -136,7 +137,13 @@ public class VoteServiceImpl implements VoteService{
 
             for (VoteRecord voteRecord: voteRecords
                     ) {
-                if (voteRecord.getValue()>0 || voteRecord.getValue()<=10)
+
+                if (voteRecord == null)
+                    break;
+
+                System.out.println(voteRecord.getValue());
+
+                if (voteRecord.getValue()<0 || voteRecord.getValue()>10)
                     throw new FormErrorException("投票分数控制在十分之内");
 
                 voteRecord.setVoteId(voteId);

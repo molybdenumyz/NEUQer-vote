@@ -70,6 +70,7 @@ public class VoteController {
         return new Response(0,response);
     }
 
+
     @Transactional
     @RequestMapping(path = "/{voteId}/submit" ,method = RequestMethod.POST)
     public Response submit(@PathVariable("voteId") long voteId,@RequestBody SubmitRequest submitRequest,HttpServletRequest request) throws  BaseException{
@@ -81,6 +82,8 @@ public class VoteController {
 
         return new Response(0,null);
     }
+
+
 
     @RequestMapping(path = "haveVoted",method = RequestMethod.GET)
     public Response haveVoted(HttpServletRequest request,@RequestParam(required = false,defaultValue = "1") int page,

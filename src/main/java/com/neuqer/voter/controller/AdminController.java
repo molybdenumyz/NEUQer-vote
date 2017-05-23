@@ -90,7 +90,7 @@ public class AdminController {
         else if (voteCreateRequest.getType() == 2)
             vote.setMax(voteCreateRequest.getMax());
         else
-            vote.setMax(MAX_NUMBER);
+            vote.setMax(voteCreateRequest.getOptions().size());
         vote.setParticipatorLimit(10000);
 
 

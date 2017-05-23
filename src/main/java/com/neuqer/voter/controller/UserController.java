@@ -16,6 +16,7 @@ import com.neuqer.voter.exception.UnknownException;
 import com.neuqer.voter.exception.User.*;
 import com.neuqer.voter.exception.VerifyCode.IllegalTypeException;
 import com.neuqer.voter.exception.VerifyCode.IllegalVerfyCodeException;
+import com.neuqer.voter.exception.VerifyCode.VerifyCodeTimeOutException;
 import com.neuqer.voter.service.TokenService;
 import com.neuqer.voter.service.UserService;
 import com.neuqer.voter.service.VerifyCodeService;
@@ -251,4 +252,21 @@ public class UserController {
     }
 
 
+    @RequestMapping(path = "/changeMobile",method = RequestMethod.PUT)
+    public Response chageMobile(@RequestBody JSONObject jsonResquest) throws IllegalVerfyCodeException, VerifyCodeTimeOutException, UserNotExistException, PasswordErrorException, UnknownException {
+        String oldMobile = jsonResquest.getString("oldMobile");
+        String newMobile = jsonResquest.getString("newMobile");
+        String password = jsonResquest.getString("password");
+        String code = jsonResquest.getString("code");
+
+        /**
+         * 验证验证码
+         */
+        if (!verifyCodeService.checkVerifyCode(newMobile,4,code))
+            throw new IllegalVerfyCodeException();
+
+        userService.changeMobile(oldMobile,newMobile,password);
+
+        return new Response(0,null);
+    }
 }

@@ -91,5 +91,24 @@ public class UserServiceImpl implements UserService {
         }
     }
 
+    @Override
+    public boolean changeMobile(String oldMobile, String newMobile, String password) throws UserNotExistException, PasswordErrorException, UnknownException {
+        User user = userMapper.getUserByMobile(oldMobile);
 
+        if (user == null) {
+            throw new UserNotExistException();
+        } else if (!BCrypt.checkpw(password, user.getPassword())) {
+            throw new PasswordErrorException();
+        }
+
+        user.setMobile(newMobile);
+
+        int row = userMapper.updateUser(user);
+
+        if (row != 1)
+            throw new UnknownException("update user mobile Error");
+
+        return true;
+
+    }
 }
