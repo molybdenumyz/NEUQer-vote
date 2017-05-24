@@ -82,7 +82,7 @@ public class QRCodeServicelmpl implements QRCodeService {
 
             int matrixWidth = bufferedImage.getWidth();
             int matrixHeigh = bufferedImage.getHeight();
-
+            System.out.println(qrCode.getLogo_path());
             BufferedImage logo = ImageIO.read(new File(qrCode.getLogo_path()));
 
             graphics2d.drawImage(logo, matrixWidth / 2 - 18, matrixHeigh / 2 - 18, matrixWidth / 8, matrixHeigh / 8, null);

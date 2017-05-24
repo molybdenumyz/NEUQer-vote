@@ -99,54 +99,52 @@ public class Excel {
 
 
 
+//        int total = 0;
+//        int j = 2;
+//        for (int i =1 ; i<=response.getOptions().size();i++){
+//            Option option = response.getOptions().get(i-1);
+//            total = total + option.getNum();
+//            HSSFRow hssfRow = sheet.createRow(i);
+//
+//            HSSFCell cell_1 = hssfRow.createCell(0);
+//            cell_1.setCellValue(option.getId());
+//            HSSFCell cell_2 = hssfRow.createCell(1);
+//            cell_2.setCellValue(option.getTitle());
+//
+//            for (VoteRecord record:response.getValueList()
+//                 ) {
+//                if (record.getOptionId() == option.getId()){
+//                    HSSFCell topCell = row2.createCell(j);
+//                    topCell.setCellValue("#"+(j-1));
+//
+//                    HSSFCell cell = hssfRow.createCell(j);
+//                    cell.setCellValue(record.getValue());
+//                    j++;
+//                }
+//                else
+//                    continue;
+//            }
 
-
-        int total = 0;
-        int j = 2;
-        for (int i =1 ; i<=response.getOptions().size();i++){
-            Option option = response.getOptions().get(i-1);
-            total = total + option.getNum();
-            HSSFRow hssfRow = sheet.createRow(i);
-            i++;
-            HSSFCell cell_1 = hssfRow.createCell(0);
-            cell_1.setCellValue(option.getId());
-            HSSFCell cell_2 = hssfRow.createCell(1);
-            cell_2.setCellValue(option.getTitle());
-
-            for (VoteRecord record:response.getValueList()
-                 ) {
-                if (record.getOptionId() == option.getId()){
-                    HSSFCell topCell = row2.createCell(j);
-                    topCell.setCellValue("#"+(j-1));
-
-                    HSSFCell cell = hssfRow.createCell(j);
-                    cell.setCellValue(record.getValue());
-                    j++;
-                }
-                else
-                    continue;
-            }
-
-            HSSFCell cell_3 = hssfRow.createCell(j+1);
-            cell_3.setCellValue(option.getValue());
-        }
-
-        HSSFCell cell2_3 = row2.createCell((short)j+1);
-        cell2_3.setCellValue("合计");
-
-        File file = new File(SERVER_PATH+response.getVoteId()+response.getTitle()+"票数统计.xls");
-
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-
-
-        // if file doesnt exists, then create it
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-
-        wb.write(fileOutputStream);
-
-        fileOutputStream.close();
+//            HSSFCell cell_3 = hssfRow.createCell(j+1);
+//            cell_3.setCellValue(option.getValue());
+//        }
+//
+//        HSSFCell cell2_3 = row2.createCell((short)j+1);
+//        cell2_3.setCellValue("合计");
+//
+//        File file = new File(SERVER_PATH+response.getVoteId()+response.getTitle()+"票数统计.xls");
+//
+//        FileOutputStream fileOutputStream = new FileOutputStream(file);
+//
+//
+//        // if file doesnt exists, then create it
+//        if (!file.exists()) {
+//            file.createNewFile();
+//        }
+//
+//        wb.write(fileOutputStream);
+//
+//        fileOutputStream.close();
         return "/record/"+response.getVoteId()+response.getTitle()+"票数统计.xls";
     }
 }

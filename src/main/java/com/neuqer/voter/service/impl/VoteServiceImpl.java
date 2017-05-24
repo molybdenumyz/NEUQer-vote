@@ -18,6 +18,7 @@ import com.neuqer.voter.mapper.VoteRecordMapper;
 import com.neuqer.voter.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -72,7 +73,9 @@ public class VoteServiceImpl implements VoteService{
         return false;
     }
 
+
     @Override
+    @Transactional
     public boolean submitVote(long voteId,long userId,List<VoteRecord> voteRecords) throws BaseException {
         //检查投票时间
         //检查投票可见性
@@ -168,7 +171,7 @@ public class VoteServiceImpl implements VoteService{
 
             for (VoteRecord voteRecord: voteRecords
                     ) {
-                if (voteRecord.getValue()>0 || voteRecord.getValue()<=100)
+                if (voteRecord.getValue()<0 || voteRecord.getValue()>100)
                     throw new FormErrorException("投票分数控制在百分之内");
 
                 voteRecord.setVoteId(voteId);

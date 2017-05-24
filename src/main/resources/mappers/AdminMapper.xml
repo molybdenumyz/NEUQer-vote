@@ -39,7 +39,7 @@
         WHERE creator_id = #{creatorId}
     </select>
     <select id="getAllVote" resultType="com.neuqer.voter.domain.VoteNeed">
-        SELECT votes.id,votes.title,votes.creator_id,votes.start_time,votes.end_time,type,votes.max,mobile,participator_num,votes.updated_at
+        SELECT votes.id,votes.title,votes.creator_id,votes.start_time,votes.end_time,type,votes.max,mobile,participator_num,votes.updated_at,visibility_limit
         FROM votes,users
         WHERE votes.is_deleted = FALSE AND votes.creator_id = users.id
         ORDER BY end_time

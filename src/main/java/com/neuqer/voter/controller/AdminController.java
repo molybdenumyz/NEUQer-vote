@@ -190,32 +190,18 @@ public class AdminController {
         return new Response(0, null);
     }
 
-    /**
-     * 生成投票二维码
-     *
-     * @param voteId
-     * @param jsonObject
-     * @return
-     */
-    @RequestMapping(path = "/{voteId}/encode", method = RequestMethod.POST)
-    public Response enCode(@PathVariable("voteId") long voteId, @RequestBody JSONObject jsonObject) {
 
-        String path = qrCodeService.EnCode(voteId, jsonObject.getString("url"));
-        EnCodeResponse response = new EnCodeResponse(path);
-        return new Response(0, response);
-    }
 
     /**
      * 投票可见状态
      *
      * @param voteId
      * @param request
-     * @param jsonRequest
      * @return
      * @throws BaseException
      */
     @RequestMapping(path = "/{voteId}/changeVisibility", method = RequestMethod.PUT)
-    public Response changeVisibility(@PathVariable("voteId") long voteId, HttpServletRequest request, @RequestBody JSONObject jsonRequest) throws BaseException {
+    public Response changeVisibility(@PathVariable("voteId") long voteId, HttpServletRequest request) throws BaseException {
         User user = (User) request.getAttribute("user");
         boolean admin = adminService.isAdmin(user.getId());
 
@@ -329,9 +315,11 @@ public class AdminController {
             request.setOptions(options);
             request.setId(vote.getId());
             request.setType(vote.getType());
+            request.setTitle(vote.getTitle());
             path = excel.objListToExcel(request);
         } else if (vote.getType() == 3 || vote.getType() == 4) {
             ValueRecordResponse response = adminService.valueRecord(vote);
+            System.out.println(response);
             path = excel.ValueRecordExcel(response);
         }
         FilePathResponse filePathResponse = new FilePathResponse(path);

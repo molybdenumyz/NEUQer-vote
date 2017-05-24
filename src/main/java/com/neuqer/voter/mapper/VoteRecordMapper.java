@@ -16,5 +16,7 @@ public interface VoteRecordMapper {
 
     List<VoteRecord> findRecord(@Param("voteId") long voteId,@Param("userId") long userId);
 
-    List<VoteRecord> findUserValue(@Param("voteId") long voteId);
+    List<Integer> findUserValue(@Param("voteId") long voteId,@Param("optionId") long optionId);
+
+    List<Long> findUserList(@Param("voteId") long voteId);
 }

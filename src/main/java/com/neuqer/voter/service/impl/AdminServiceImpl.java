@@ -4,6 +4,7 @@ import com.github.pagehelper.PageHelper;
 import com.neuqer.voter.common.Utils;
 import com.neuqer.voter.domain.*;
 import com.neuqer.voter.dto.request.FindLikeRequest;
+import com.neuqer.voter.dto.response.OptionValue;
 import com.neuqer.voter.dto.response.ValueRecordResponse;
 import com.neuqer.voter.exception.Auth.NoPermissonException;
 import com.neuqer.voter.exception.BaseException;
@@ -18,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -204,17 +206,32 @@ public class AdminServiceImpl implements AdminService{
     @Override
     public ValueRecordResponse valueRecord(Vote vote) {
         ValueRecordResponse response = new ValueRecordResponse();
+        
         response.setVoteId(vote.getId());
         response.setTitle(vote.getTitle());
         response.setType(vote.getType());
+        
 
+        
         List<Option> optionList = optionMapper.listOptions(vote.getId());
 
-        List<VoteRecord> voteRecords = voteRecordMapper.findUserValue(vote.getId());
+        List<OptionValue> optionValueList = new ArrayList<OptionValue>();
+        for (Option option:optionList
+             ) {
+            List<Integer> voteRecords = voteRecordMapper.findUserValue(vote.getId(),option.getId());
+            OptionValue tempValue = new OptionValue();
+            tempValue.setId(option.getId());
+            tempValue.setNum(option.getNum());
+            tempValue.setSum(option.getValue());
+            tempValue.setTitle(option.getTitle());
+            tempValue.setVoteId(option.getVoteId());
+            tempValue.setVoteRecords(voteRecords);
+            OptionValue optionValue = tempValue;
+            optionValueList.add(optionValue);
+        }
 
-        response.setOptions(optionList);
 
-        response.setValueList(voteRecords);
+       response.setOptionValue(optionValueList);
 
         return response;
     }

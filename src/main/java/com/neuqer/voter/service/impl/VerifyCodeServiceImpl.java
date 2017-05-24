@@ -37,6 +37,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService{
         //String code  = Utils.createVerifyCode(); 假装在发送验证码
         String code = "1234";
         User user = userService.getUserByMobile(mobile);
+
         if(type == 1) {
 
             if (user != null) {
@@ -51,7 +52,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService{
         }
 
         return updateVerifyCode(mobile,type,code);
-    }
+     }
 
     @Override
     public boolean checkVerifyCode(String mobile, int type,String code) throws IllegalVerfyCodeException, VerifyCodeTimeOutException {

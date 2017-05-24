@@ -10,12 +10,14 @@ import com.neuqer.voter.domain.Vote;
 import com.neuqer.voter.domain.VoteNeed;
 import com.neuqer.voter.dto.request.SubmitRequest;
 import com.neuqer.voter.dto.request.UpdateVoteInfoRequest;
+import com.neuqer.voter.dto.response.EnCodeResponse;
 import com.neuqer.voter.dto.response.VoteInfoResponse;
 import com.neuqer.voter.exception.Auth.NoPermissonException;
 import com.neuqer.voter.exception.BaseException;
 import com.neuqer.voter.exception.UnknownException;
 import com.neuqer.voter.exception.Vote.VoteNotExistException;
 import com.neuqer.voter.service.OptionService;
+import com.neuqer.voter.service.QRCodeService;
 import com.neuqer.voter.service.VoteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +39,9 @@ public class VoteController {
 
    @Autowired
     OptionService optionService;
+
+   @Autowired
+   QRCodeService qrCodeService;
     /**
      * 获取单个投票详细信息
      *
@@ -100,4 +105,19 @@ public class VoteController {
         return new Response(0,response);
     }
 
+    /**
+     * @api {POST} /vote/:voteId/encode [二维码外链]
+     *
+     * @apiParam long voteId 投票的ID
+     * @apiParam String url 访问的url（请带http://)
+     *
+     * @apiParamExample
+     */
+    @RequestMapping(path = "/{voteId}/encode", method = RequestMethod.POST)
+    public Response enCode(@PathVariable("voteId") long voteId, @RequestBody JSONObject jsonObject) {
+
+        String path = qrCodeService.EnCode(voteId, jsonObject.getString("url"));
+        EnCodeResponse response = new EnCodeResponse(path);
+        return new Response(0, response);
+    }
 }

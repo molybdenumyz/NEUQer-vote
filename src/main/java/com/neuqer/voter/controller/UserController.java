@@ -62,10 +62,6 @@ public class UserController {
         if (!Validator.validatorType(type))
             throw new IllegalTypeException();
 
-        User user = userService.getUserByMobile(mobile);
-
-        if (user != null)
-            throw new MobileExistedException();
 
         VerifyResponse response = new VerifyResponse("1234");
 
@@ -213,7 +209,8 @@ public class UserController {
         String newSex = jsonRequest.getString("newSex");
 
         User user = (User) request.getAttribute("user");
-        if (newSex == "male" || newSex == "female")
+
+        if (newSex.equals("male") || newSex.equals("female"))
             user.setSex(newSex);
         else
             throw new IlegaleSexException();
@@ -253,7 +250,7 @@ public class UserController {
 
 
     @RequestMapping(path = "/changeMobile",method = RequestMethod.PUT)
-    public Response chageMobile(@RequestBody JSONObject jsonResquest) throws IllegalVerfyCodeException, VerifyCodeTimeOutException, UserNotExistException, PasswordErrorException, UnknownException {
+    public Response chageMobile(@RequestBody JSONObject jsonResquest) throws IllegalVerfyCodeException, VerifyCodeTimeOutException, UserNotExistException, PasswordErrorException, UnknownException, MobileExistedException {
         String oldMobile = jsonResquest.getString("oldMobile");
         String newMobile = jsonResquest.getString("newMobile");
         String password = jsonResquest.getString("password");

@@ -2,12 +2,14 @@ package com.neuqer.voter.dto.request;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * Created by yinzhe on 17/5/9.
  */
 public class VerifyCodeRequest {
 
-    //@NotBlank
+    @NotNull
     private Integer type;
 
     @NotBlank

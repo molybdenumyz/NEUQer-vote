@@ -4,9 +4,9 @@
 <mapper namespace="com.neuqer.voter.mapper.VoteMapper">
 
     <select id="haveVoted" resultType="com.neuqer.voter.domain.VoteNeed">
-        SELECT name,participator_num,start_time,end_time,max,votes.id,votes.updated_at,votes.type
+        SELECT DISTINCT votes.id, title,participator_num,start_time,end_time,max,votes.updated_at,votes.type,mobile
         FROM votes,users,vote_records
-        WHERE vote_records.user_id = #{userId} and vote_records.vote_id = votes.id and creator_id = users.id
+        WHERE vote_records.user_id = #{userId} and votes.creator_id = users.id and votes.id = vote_records.vote_id and visibility_limit =TRUE
     </select>
 
     <select id="getVote" resultType="com.neuqer.voter.domain.Vote">

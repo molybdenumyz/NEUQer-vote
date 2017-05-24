@@ -9,9 +9,7 @@ import java.util.List;
  * Created by yinzhe on 17/5/19.
  */
 public class ValueRecordResponse {
-    private List<VoteRecord> valueList;
-
-    private List<Option>options;
+    private List<OptionValue> optionValue;
 
     private long voteId;
 
@@ -20,20 +18,12 @@ public class ValueRecordResponse {
     private int type;
 
 
-    public List<VoteRecord> getValueList() {
-        return valueList;
+    public List<OptionValue> getOptionValue() {
+        return optionValue;
     }
 
-    public void setValueList(List<VoteRecord> valueList) {
-        this.valueList = valueList;
-    }
-
-    public List<Option> getOptions() {
-        return options;
-    }
-
-    public void setOptions(List<Option> options) {
-        this.options = options;
+    public void setOptionValue(List<OptionValue> optionValue) {
+        this.optionValue = optionValue;
     }
 
     public long getVoteId() {
@@ -59,4 +49,6 @@ public class ValueRecordResponse {
     public void setType(int type) {
         this.type = type;
     }
+
+
 }

@@ -22,9 +22,15 @@
 		WHERE vote_id = #{voteId} and user_id = #{userId}
 	</select>
 
-	<select id="findUserValue" resultType="com.neuqer.voter.domain.VoteRecord">
-		SELECT *
+	<select id="findUserValue" resultType="Integer">
+		SELECT value
 		FROM  vote_records
+		WHERE vote_id = #{voteId} and option_id = #{optionId}
+	</select>
+
+	<select id="findUserList">
+		SELECT user_id
+		FROM vote_records
 		WHERE vote_id = #{voteId}
 	</select>
 </mapper>

@@ -12,6 +12,7 @@ public class UserLoginResponse {
         this.user = new User();
         this.user.setUserId(user.getId());
         this.user.setMobile(user.getMobile());
+        this.user.setSex(user.getSex());
         this.token = token;
     }
 
@@ -40,6 +41,15 @@ public class UserLoginResponse {
     public class User {
         private long userId;
         private String mobile;
+        private String sex;
+
+        public String getSex() {
+            return sex;
+        }
+
+        public void setSex(String sex) {
+            this.sex = sex;
+        }
 
         public long getUserId() {
             return userId;

@@ -22,7 +22,7 @@ public class QRCode {
         this.voteId = voteId;
     }
 
-    private final String logo_path = "/Users/Hotown/WorkSpace/java_project/vote_be/QRCode" + "/" + "logo.jpg";
+    private final String logo_path = "QRCode" + "/" + "logo.jpg";
 
     public String getLogo_path() {
         return logo_path;
