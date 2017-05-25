@@ -4,7 +4,7 @@ package com.neuqer.voter.exception;
  * Created by lumin on 17/3/16.
  */
 
-public abstract class BaseException extends Exception {
+public abstract class BaseException extends RuntimeException{
     private int code;
 
     private String message;

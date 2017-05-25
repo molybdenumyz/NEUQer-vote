@@ -144,10 +144,10 @@ public class VoteServiceImpl implements VoteService{
                 if (voteRecord == null)
                     break;
 
-                System.out.println(voteRecord.getValue());
 
-                if (voteRecord.getValue()<0 || voteRecord.getValue()>10)
+                if (voteRecord.getValue()<0 || voteRecord.getValue()>10){
                     throw new FormErrorException("投票分数控制在十分之内");
+                }
 
                 voteRecord.setVoteId(voteId);
                 voteRecord.setCreateAt(now);
