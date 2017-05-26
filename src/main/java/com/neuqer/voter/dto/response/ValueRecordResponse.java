@@ -17,6 +17,15 @@ public class ValueRecordResponse {
 
     private int type;
 
+    private int participatorNum;
+
+    public int getParticipatorNum() {
+        return participatorNum;
+    }
+
+    public void setParticipatorNum(int participatorNum) {
+        this.participatorNum = participatorNum;
+    }
 
     public List<OptionValue> getOptionValue() {
         return optionValue;

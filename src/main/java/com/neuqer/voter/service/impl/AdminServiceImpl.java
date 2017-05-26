@@ -42,7 +42,10 @@ public class AdminServiceImpl implements AdminService{
     @Override
     public boolean isAdmin(long userId) {
         Integer id = voteMapper.isAdmin(userId);
-        if (id != 2)
+
+        if (id == null)
+            return false;
+        else if (id != 2)
             return false;
         else
             return true;
@@ -210,8 +213,7 @@ public class AdminServiceImpl implements AdminService{
         response.setVoteId(vote.getId());
         response.setTitle(vote.getTitle());
         response.setType(vote.getType());
-        
-
+        response.setParticipatorNum(vote.getParticipatorNum());
         
         List<Option> optionList = optionMapper.listOptions(vote.getId());
 

@@ -6,7 +6,7 @@
     <groupId>com.neuqer</groupId>
     <artifactId>voter</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <packaging>jar</packaging>
+    <packaging>war</packaging>
 
     <name>voter</name>
     <description>Demo project for Spring Boot</description>
@@ -14,7 +14,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.0.0.BUILD-SNAPSHOT</version>
+        <version>1.5.3.RELEASE  </version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
 
@@ -72,7 +72,7 @@
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
-            <version>1.0.0</version>
+            <version>1.1.1</version>
         </dependency>
 
         <!--mybatis-->

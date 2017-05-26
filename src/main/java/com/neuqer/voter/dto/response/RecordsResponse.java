@@ -21,6 +21,7 @@ public class RecordsResponse {
 		voteShow.setId(vote.getId());
 		voteShow.setTitle(vote.getTitle());
 		voteShow.setType(vote.getType());
+		voteShow.setParticipatorNum(vote.getParticipatorNum());
 		this.options = options;
 	}
 
@@ -45,6 +46,15 @@ public class RecordsResponse {
 		private long id;
 		private String title;
 		private int type;
+		private int participatorNum;
+
+		public int getParticipatorNum() {
+			return participatorNum;
+		}
+
+		public void setParticipatorNum(int participatorNum) {
+			this.participatorNum = participatorNum;
+		}
 
 		public int getType() {
 			return type;

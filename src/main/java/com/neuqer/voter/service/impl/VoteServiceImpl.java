@@ -92,9 +92,14 @@ public class VoteServiceImpl implements VoteService{
         //检查是否已经提交过
        if ( voteRecordMapper.findRecord(voteId,userId).size()!= 0 )
            throw new HaveVotedException();
+        int size = 0;
+        try {
+            size = voteRecords.size();
+        }catch (Exception e)
+        {
+            throw new FormErrorException("请正确提交投票，voteRecords丢失");
+        }
 
-
-        int size = voteRecords.size();
 
         if (type == 1){
             if (size != 1)

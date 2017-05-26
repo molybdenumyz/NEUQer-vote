@@ -9,7 +9,7 @@ public class UnknownException extends BaseException {
     }
 
     public UnknownException(String messgae) {
-        super.setCode(10000);
+        super.setCode(10001);
         super.setMessage(messgae);
     }
 }

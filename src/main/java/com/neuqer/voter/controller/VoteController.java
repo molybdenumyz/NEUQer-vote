@@ -15,6 +15,7 @@ import com.neuqer.voter.dto.response.VoteInfoResponse;
 import com.neuqer.voter.exception.Auth.NoPermissonException;
 import com.neuqer.voter.exception.BaseException;
 import com.neuqer.voter.exception.UnknownException;
+import com.neuqer.voter.exception.Vote.FormErrorException;
 import com.neuqer.voter.exception.Vote.VoteNotExistException;
 import com.neuqer.voter.service.OptionService;
 import com.neuqer.voter.service.QRCodeService;
@@ -51,8 +52,13 @@ public class VoteController {
      */
     @RequestMapping(path = "/info", method = RequestMethod.GET)
     public Response getVoteInfo(HttpServletRequest request) throws BaseException {
+        long voteId = 0;
+        try{
+           voteId = Long.parseLong(request.getParameter("voteId"));
+        }catch (Exception e){
+            throw new FormErrorException("show me voteId");
+        }
 
-        long voteId = Long.parseLong(request.getParameter("voteId"));
 
         Vote vote = voteService.getVoteInfo(voteId);
 
@@ -105,18 +111,17 @@ public class VoteController {
         return new Response(0,response);
     }
 
-    /**
-     * @api {POST} /vote/:voteId/encode [二维码外链]
-     *
-     * @apiParam long voteId 投票的ID
-     * @apiParam String url 访问的url（请带http://)
-     *
-     * @apiParamExample
-     */
+
     @RequestMapping(path = "/{voteId}/encode", method = RequestMethod.POST)
     public Response enCode(@PathVariable("voteId") long voteId, @RequestBody JSONObject jsonObject) {
+        String path = "";
 
-        String path = qrCodeService.EnCode(voteId, jsonObject.getString("url"));
+        try {
+            path = qrCodeService.EnCode(voteId, jsonObject.getString("url"));
+        }catch (Exception e)
+        {
+            throw new FormErrorException("show me url");
+        }
         EnCodeResponse response = new EnCodeResponse(path);
         return new Response(0, response);
     }

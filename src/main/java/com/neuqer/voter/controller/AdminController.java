@@ -252,14 +252,17 @@ public class AdminController {
     }
 
     @RequestMapping(path = "/updateVote", method = RequestMethod.POST)
-    public Response updateVoteInfo(@RequestBody @Valid UpdateVoteInfoRequest request) throws BaseException {
+    public Response updateVoteInfo(@RequestBody @Valid UpdateVoteInfoRequest request,HttpServletRequest httpRequest) throws BaseException {
 
-        long userId = request.getCreatorId();
-        boolean admin = adminService.isAdmin(userId);
+        User user = (User) httpRequest.getAttribute("user");
+        boolean admin = adminService.isAdmin(user.getId());
 
         if (!admin)
             throw new NoPermissonException();
         long now = Utils.createTimeStamp();
+
+        if (request.getId() == 0)
+            throw new FormErrorException("show me voteId");
 
         Vote vote = adminService.getVoteInfo(request.getId());
         if (request.getStartTime() != 0) {
@@ -292,10 +295,14 @@ public class AdminController {
     public Response record(@PathVariable("voteId") long voteId, HttpServletRequest request) throws BaseException {
 
         Vote vote = adminService.getVoteInfo(voteId);
+        if (vote == null){
+            throw new VoteNotExistException();
+        }
         if (vote.getType() == 3 || vote.getType() == 4) {
             ValueRecordResponse response = adminService.valueRecord(vote);
             return new Response(0, response);
         }
+
         List<Option> options = adminService.record(vote);
 
 
