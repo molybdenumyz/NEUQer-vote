@@ -16,16 +16,21 @@ import com.neuqer.voter.exception.Vote.FormErrorException;
 import com.neuqer.voter.exception.Vote.TimeErrorException;
 import com.neuqer.voter.exception.Vote.VoteNotExistException;
 import com.neuqer.voter.service.*;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -312,10 +317,14 @@ public class AdminController {
 
 
     @RequestMapping(path = "/{voteId}/download", method = RequestMethod.GET)
-    public Response download(@PathVariable("voteId") long voteId) throws IOException, BaseException {
+    public void download(@PathVariable("voteId") long voteId, HttpServletRequest httpServletRequest, HttpServletResponse response) throws IOException, BaseException {
         Excel excel = new Excel();
-        String path = "";
+        FileOutputStream fileOutputStream = null;
+
+        OutputStream os =  response.getOutputStream();
         Vote vote = adminService.getVoteInfo(voteId);
+        String fileName = voteId+vote.getTitle()+".xls";
+
         if (vote.getType() == 1 || vote.getType() == 2) {
             List<Option> options = adminService.record(vote);
             RecordRequest request = new RecordRequest();
@@ -323,14 +332,18 @@ public class AdminController {
             request.setId(vote.getId());
             request.setType(vote.getType());
             request.setTitle(vote.getTitle());
-            path = excel.objListToExcel(request);
+            excel.objListToExcel(request,os);
+
         } else if (vote.getType() == 3 || vote.getType() == 4) {
-            ValueRecordResponse response = adminService.valueRecord(vote);
-            System.out.println(response);
-            path = excel.ValueRecordExcel(response);
+            ValueRecordResponse ValueResponse = adminService.valueRecord(vote);
+            excel.ValueRecordExcel(ValueResponse,os);
         }
-        FilePathResponse filePathResponse = new FilePathResponse(path);
-        return new Response(0, filePathResponse);
+
+        response.setContentType("application/octet-stream");// 设置强制下载不打开
+        response.addHeader("Content-Disposition",
+                "attachment;fileName=" +  fileName);// 设置文件名
+
+        return;
     }
 
 

@@ -19,9 +19,8 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
 
 public class Excel {
-    final static String SERVER_PATH = "/Library/WebServer/Documents/record/";
 
-    public String  objListToExcel(RecordRequest records) throws IOException {
+    public void objListToExcel(RecordRequest records,OutputStream os) throws IOException {
         HSSFWorkbook wb = new HSSFWorkbook();
 
         HSSFSheet sheet = wb.createSheet(records.getTitle()+"投票结果统计");
@@ -44,7 +43,7 @@ public class Excel {
         int i =1;
         int total = 0;
         for (Option option:records.getOptions()
-             ) {
+                ) {
             total = total + option.getNum();
             HSSFRow hssfRow = sheet.createRow(i);
             i++;
@@ -66,25 +65,12 @@ public class Excel {
         cell_2.setCellValue(total);
         HSSFCell cell_3 = hssfRow.createCell(3);
         cell_3.setCellValue("100%");
-        File file = new File(SERVER_PATH+records.getId()+records.getTitle()+"票数统计.xls");
 
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
+        wb.write(os);
 
-
-        // if file doesnt exists, then create it
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-
-
-        wb.write(fileOutputStream);
-
-        fileOutputStream.close();
-
-        return "/record/"+records.getId()+records.getTitle()+"票数统计.xls";
     }
 
-    public String ValueRecordExcel(ValueRecordResponse response) throws IOException {
+    public void ValueRecordExcel(ValueRecordResponse response,OutputStream os) throws IOException {
 
         HSSFWorkbook wb = new HSSFWorkbook();
 
@@ -105,7 +91,7 @@ public class Excel {
         cell3.setCellValue("总计");
         int i =1;
         for (OptionValue optionValue:optionValueList
-             ) {
+                ) {
             HSSFRow row = sheet.createRow(i);
             i++;
             HSSFCell cell = row.createCell(0);
@@ -114,7 +100,7 @@ public class Excel {
             cell1.setCellValue(optionValue.getTitle());
             int j = 2;
             for (int value:optionValue.getVoteRecords()
-                 ) {
+                    ) {
                 HSSFCell topCell = row2.createCell(j);
                 topCell.setCellValue("#"+(j-1));
 
@@ -126,20 +112,7 @@ public class Excel {
             cell2.setCellValue(optionValue.getSum());
         }
 
-        File file = new File(SERVER_PATH+response.getVoteId()+response.getTitle()+"票数统计.xls");
+        wb.write(os);
 
-        FileOutputStream fileOutputStream = new FileOutputStream(file);
-
-
-        // if file doesnt exists, then create it
-        if (!file.exists()) {
-            file.createNewFile();
-        }
-
-        wb.write(fileOutputStream);
-
-        fileOutputStream.close();
-
-        return "/record/"+response.getVoteId()+response.getTitle()+"票数统计.xls";
     }
 }

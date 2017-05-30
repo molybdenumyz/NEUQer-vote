@@ -41,7 +41,7 @@ public class ExcelTest {
             recordRequest.setTitle("全场最佳");
             recordRequest.setOptions(options);
             Excel excel = new Excel();
-            excel.objListToExcel(recordRequest);
+            //excel.objListToExcel(recordRequest);
         } catch (Exception e) {
             e.printStackTrace();
         }
