@@ -3,6 +3,7 @@ package com.neuqer.voter.dto.response;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.neuqer.voter.domain.Option;
 import com.neuqer.voter.domain.Vote;
+import com.neuqer.voter.domain.VoteRecord;
 
 import java.util.List;
 
@@ -15,8 +16,8 @@ public class VoteInfoResponse {
 
     private VoteShow voteShow;
     private List<Option> options;
-
-    public VoteInfoResponse(Vote vote,List<Option> options) {
+    private List<VoteRecord> records;
+    public VoteInfoResponse(Vote vote,List<Option> options,List<VoteRecord> records) {
         this.voteShow = new VoteShow();
         voteShow.setCreatorId(vote.getCreatorId());
         voteShow.setId(vote.getId());
@@ -30,8 +31,16 @@ public class VoteInfoResponse {
         voteShow.setFlag(vote.getFlag());
         voteShow.setParticipatorNum(vote.getParticipatorNum());
         this.options = options;
+        this.records = records;
     }
 
+    public List<VoteRecord> getRecords() {
+        return records;
+    }
+
+    public void setRecords(List<VoteRecord> records) {
+        this.records = records;
+    }
 
     public List<Option> getOptions() {
         return options;

@@ -5,7 +5,7 @@ package com.neuqer.voter.dto.response;
  */
 public class EnCodeResponse {
     public EnCodeResponse(String path) {
-        this.path = "192.168.1.219/QRcode/" + path;
+        this.path = "123.207.171.244/QRCode/" + path;
     }
 
     private String path;

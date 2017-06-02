@@ -25,4 +25,5 @@ public interface VoteMapper {
     Integer updateVoteParticipatorNum(@Param("id") long id);
 
     List<VoteNeed> haveVoted(@Param("userId") long userId);
+
 }

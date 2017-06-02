@@ -145,7 +145,7 @@ public class AdminController {
         List<Option> options = optionService.listOptions(voteId);
 
 
-        VoteInfoResponse response = new VoteInfoResponse(vote, options);
+        VoteInfoResponse response = new VoteInfoResponse(vote, options,null);
 
         return new Response(0, response);
     }

@@ -42,13 +42,15 @@
         SELECT votes.id,votes.title,votes.creator_id,votes.start_time,votes.end_time,type,votes.max,mobile,participator_num,votes.updated_at,visibility_limit
         FROM votes,users
         WHERE votes.is_deleted = FALSE AND votes.creator_id = users.id
-        ORDER BY end_time
+        ORDER BY votes.start_time DESC
     </select>
     
     <select id="findLike" parameterType="com.neuqer.voter.dto.request.FindLikeRequest" resultType="com.neuqer.voter.domain.VoteNeed">
         SELECT votes.id,votes.title,start_time,end_time,votes.updated_at,mobile,visibility_limit,max,type
         FROM votes,users
         <where>
+            votes.is_deleted = 0
+            AND
             votes.creator_id = users.id
             <if test='title != null'>AND title LIKE  CONCAT('%',#{title},'%')</if>
             <if test="createTimeFrom!=-1"> AND votes.created_at &gt; #{createTimeFrom}</if>
@@ -67,6 +69,7 @@
                 AND #{now} &gt; end_time
             </if>
         </where>
+        ORDER BY votes.start_time DESC
     </select>
     
     <insert id="createVote" parameterType="com.neuqer.voter.domain.Vote" useGeneratedKeys="true" keyProperty="id">
@@ -102,7 +105,8 @@
 
     <update id="deleteVote">
         UPDATE votes SET
-        is_deleted = TRUE
+        is_deleted = TRUE,
+        visibility_limit = FALSE
         WHERE id = #{id}
     </update>
 

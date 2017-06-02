@@ -16,6 +16,10 @@ import java.util.Map;
 import javax.imageio.ImageIO;
 
 
+import com.google.zxing.WriterException;
+import com.neuqer.voter.exception.BaseException;
+import com.neuqer.voter.exception.UnknownException;
+import com.neuqer.voter.exception.Vote.FormErrorException;
 import com.neuqer.voter.mapper.VoteMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,21 +52,26 @@ public class QRCodeServicelmpl implements QRCodeService {
     }
 
     @Override
-    public String EnCode(long voteId, String url) {
+    public String EnCode(long voteId, String url) throws BaseException {
         QRCode qrCode = new QRCode();
 
         qrCode.setContents(url);
         qrCode.setVoteId(voteId);
-        BitMatrix bitMatrix;
+        BitMatrix bitMatrix = null;
+
         BufferedImage bufferedImageQRCode;
-        try {
-            bitMatrix = multiFormatWriter.encode(qrCode.getContents(), BarcodeFormat.QR_CODE, qrCode.getWidth(), qrCode.getHeight(), hints);
+            try {
+                bitMatrix = multiFormatWriter.encode(qrCode.getContents(), BarcodeFormat.QR_CODE, qrCode.getWidth(), qrCode.getHeight(), hints);
+            }catch (Exception e){
+                throw new UnknownException(e.getMessage());
+            }
+
             bufferedImageQRCode = MatrixToImageWriter.toBufferedImage(bitMatrix);
             appendLogo(qrCode, bufferedImageQRCode);
-        } catch (Exception e) {
 
-            e.printStackTrace();
-        }
+
+
+
         String path = rootPath + "QRCode" + "/" + qrCode.getVoteId() + "." + qrCode.getFormat();
         voteMapper.insertQaPath(path, voteId);
 
@@ -70,11 +79,11 @@ public class QRCodeServicelmpl implements QRCodeService {
 
     }
 
-    public void appendLogo(QRCode qrCode, BufferedImage image) {
+    public void appendLogo(QRCode qrCode, BufferedImage image) throws BaseException {
 
         OutputStream logoStream = null;
 
-        try {
+
 
             BufferedImage bufferedImage = new BufferedImage(qrCode.getWidth(), qrCode.getHeight(), BufferedImage.TYPE_INT_BGR);
             Graphics2D graphics2d = bufferedImage.createGraphics();
@@ -83,7 +92,13 @@ public class QRCodeServicelmpl implements QRCodeService {
             int matrixWidth = bufferedImage.getWidth();
             int matrixHeigh = bufferedImage.getHeight();
             System.out.println(qrCode.getLogo_path());
-            BufferedImage logo = ImageIO.read(new File(qrCode.getLogo_path()));
+            BufferedImage logo = null;
+            try {
+                logo = ImageIO.read(new File(qrCode.getLogo_path()));
+            }catch (Exception e){
+                throw new UnknownException(e.getMessage());
+            }
+
 
             graphics2d.drawImage(logo, matrixWidth / 2 - 18, matrixHeigh / 2 - 18, matrixWidth / 8, matrixHeigh / 8, null);
             BasicStroke stroke = new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
@@ -103,14 +118,22 @@ public class QRCodeServicelmpl implements QRCodeService {
 
             bufferedImage.flush();
 
-            logoStream = new FileOutputStream(rootPath + "QRCode" + "/" + qrCode.getVoteId() + "." + qrCode.getFormat());
-            JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(logoStream);
 
-            encoder.encode(bufferedImage);
+                try {
+                    logoStream = new FileOutputStream(rootPath + "QRCode" + "/" + qrCode.getVoteId() + "." + qrCode.getFormat());
+                }catch (Exception e){
+                    throw new FormErrorException(e.getMessage());
+                }
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        } finally {
+                JPEGImageEncoder encoder = JPEGCodec.createJPEGEncoder(logoStream);
+
+               try{
+                   encoder.encode(bufferedImage);
+               }catch (Exception e){
+                   throw new FormErrorException(e.getMessage());
+               }
+
+
             if (logoStream != null) {
                 try {
                     logoStream.close();
@@ -121,4 +144,4 @@ public class QRCodeServicelmpl implements QRCodeService {
         }
 
     }
-}
+

@@ -24,4 +24,6 @@ public interface VoteService {
     boolean submitVote(long voteId, long userId,List<VoteRecord> voteRecords) throws BaseException;
 
     List<VoteNeed> haveVoted(long userId,int page, int rows) throws VoteNotExistException;
+
+    List<VoteRecord> UserValue(long userId,Vote vote);
 }

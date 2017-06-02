@@ -1,18 +1,13 @@
 package com.neuqer.voter.controller;
 
 import com.alibaba.fastjson.JSONObject;
-import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.google.zxing.WriterException;
 import com.neuqer.voter.common.Response;
-import com.neuqer.voter.domain.Option;
-import com.neuqer.voter.domain.User;
-import com.neuqer.voter.domain.Vote;
-import com.neuqer.voter.domain.VoteNeed;
+import com.neuqer.voter.domain.*;
 import com.neuqer.voter.dto.request.SubmitRequest;
-import com.neuqer.voter.dto.request.UpdateVoteInfoRequest;
 import com.neuqer.voter.dto.response.EnCodeResponse;
 import com.neuqer.voter.dto.response.VoteInfoResponse;
-import com.neuqer.voter.exception.Auth.NoPermissonException;
 import com.neuqer.voter.exception.BaseException;
 import com.neuqer.voter.exception.UnknownException;
 import com.neuqer.voter.exception.Vote.FormErrorException;
@@ -25,7 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -43,6 +38,7 @@ public class VoteController {
 
    @Autowired
    QRCodeService qrCodeService;
+
     /**
      * 获取单个投票详细信息
      *
@@ -52,20 +48,47 @@ public class VoteController {
      */
     @RequestMapping(path = "/info", method = RequestMethod.GET)
     public Response getVoteInfo(HttpServletRequest request) throws BaseException {
+        User user = (User) request.getAttribute("user");
         long voteId = 0;
+
         try{
            voteId = Long.parseLong(request.getParameter("voteId"));
         }catch (Exception e){
             throw new FormErrorException("show me voteId");
         }
 
-
         Vote vote = voteService.getVoteInfo(voteId);
 
         List<Option> options = optionService.listOptions(voteId);
 
+        if (user != null){
+            if (vote.getType() > 2){
+                List<VoteRecord> records = voteService.UserValue(user.getId(),vote);
 
-        VoteInfoResponse response = new VoteInfoResponse(vote,options);
+                VoteInfoResponse response = new VoteInfoResponse(vote,options,records);
+
+                return new Response(0,response);
+            }
+            if (vote.getType() < 3){
+                List<VoteRecord> records = voteService.UserValue(user.getId(),vote);
+
+                for (Option option:options
+                     ) {
+                    for (VoteRecord record:records){
+                        if (record.getOptionId() != option.getId())
+                            continue;
+                        else {
+                            option.setValue(1);
+                            break;
+                        }
+                    }
+                }
+                VoteInfoResponse response = new VoteInfoResponse(vote,options,null);
+                return new Response(0,response);
+            }
+        }
+
+        VoteInfoResponse response = new VoteInfoResponse(vote,options,null);
 
         return new Response(0,response);
     }
@@ -113,16 +136,17 @@ public class VoteController {
 
 
     @RequestMapping(path = "/{voteId}/encode", method = RequestMethod.POST)
-    public Response enCode(@PathVariable("voteId") long voteId, @RequestBody JSONObject jsonObject) {
+    public Response enCode(@PathVariable("voteId") long voteId, @RequestBody JSONObject jsonObject) throws BaseException, IOException, WriterException {
         String path = "";
+        String url = "";
 
-        try {
-            path = qrCodeService.EnCode(voteId, jsonObject.getString("url"));
-        }catch (Exception e)
-        {
-            throw new FormErrorException("show me url");
-        }
-        EnCodeResponse response = new EnCodeResponse(path);
+           url  = jsonObject.getString("url");
+            if (url == null)
+                throw new FormErrorException("show me url");
+
+     path = qrCodeService.EnCode(voteId, url);
+     EnCodeResponse response = new EnCodeResponse(path);
+
         return new Response(0, response);
     }
 }

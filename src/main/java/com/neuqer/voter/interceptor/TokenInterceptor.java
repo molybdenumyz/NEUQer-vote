@@ -61,6 +61,13 @@ public class TokenInterceptor implements HandlerInterceptor {
         if (request.getMethod().equals("OPTIONS"))
             return true;
 
+        if (token != null && nowUrl.equals("/vote/info")){
+            Token tokenObj = tokenService.verifyToken(token);
+            User user = userService.getUser(tokenObj.getUserId());
+            request.setAttribute("user", user);
+            return true;
+        }
+
         for (String url : URLS_WITHOUT_TOKEN) {
             if (url.equals(nowUrl)) {
                 return true;
@@ -74,9 +81,11 @@ public class TokenInterceptor implements HandlerInterceptor {
         if (tokenService == null) {
             throw new UnknownException();
         }
+
         Token tokenObj = tokenService.verifyToken(token);
         User user = userService.getUser(tokenObj.getUserId());
         request.setAttribute("user", user);
+
         return true;
     }
 

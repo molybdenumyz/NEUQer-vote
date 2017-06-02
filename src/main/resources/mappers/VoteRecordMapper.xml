@@ -2,12 +2,7 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.neuqer.voter.mapper.VoteRecordMapper">
-	<insert id="createVote" parameterType="com.neuqer.voter.domain.Vote" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO votes
-		(title, description, anonymous, participator_limit, visibility_limit, start_time, end_time, creator_id, created_at, updated_at, password,type,max)
-		VALUES
-		(#{title}, #{description}, #{anonymous}, #{participatorLimit}, #{visibilityLimit}, #{startTime}, #{endTime}, #{creatorId}, #{createdAt}, #{updatedAt}, #{password},#{type},#{max});
-	</insert>
+
 	<insert id="addRecord" parameterType="com.neuqer.voter.domain.VoteRecord" useGeneratedKeys="true" keyProperty="id">
 		INSERT INTO
 		vote_records
@@ -28,9 +23,10 @@
 		WHERE vote_id = #{voteId} and option_id = #{optionId}
 	</select>
 
-	<select id="findUserList">
-		SELECT user_id
-		FROM vote_records
-		WHERE vote_id = #{voteId}
+	<select id="findThisUserValue" resultType="com.neuqer.voter.domain.VoteRecord">
+		SELECT vote_records.id,vote_records.option_id,vote_records.vote_id,vote_records.value,created_at,updated_at,user_id,title
+		FROM vote_records,problem_options
+		WHERE vote_records.vote_id = #{voteId} and user_id = #{userId}
+		and vote_records.vote_id = problem_options.vote_id
 	</select>
 </mapper>

@@ -226,4 +226,14 @@ public class VoteServiceImpl implements VoteService{
 
         return votes;
     }
+
+    @Override
+    public List<VoteRecord> UserValue(long userId, Vote vote) {
+        if (vote.getType() < 3){
+            List<VoteRecord> records = voteRecordMapper.findRecord(vote.getId(),userId);
+            return records;
+        }
+        else
+            return voteRecordMapper.findThisUserValue(vote.getId(),userId);
+    }
 }

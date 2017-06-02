@@ -4,10 +4,15 @@
 <mapper namespace="com.neuqer.voter.mapper.VoteMapper">
 
     <select id="haveVoted" resultType="com.neuqer.voter.domain.VoteNeed">
-        SELECT DISTINCT votes.id, title,participator_num,start_time,end_time,max,votes.updated_at,votes.type,mobile
-        FROM votes,users,vote_records
-        WHERE vote_records.user_id = #{userId} and votes.creator_id = users.id and votes.id = vote_records.vote_id and visibility_limit =TRUE
+        SELECT DISTINCT votes.id, title,participator_num,start_time,end_time,max,votes.updated_at,votes.type
+        FROM votes,vote_records
+        WHERE votes.is_deleted = FALSE
+        and vote_records.user_id = #{userId}
+        and votes.id = vote_records.vote_id
+        and visibility_limit =TRUE
+        ORDER BY votes.start_time DESC
     </select>
+
 
     <select id="getVote" resultType="com.neuqer.voter.domain.Vote">
         SELECT *
@@ -15,6 +20,7 @@
         WHERE id = #{id}
           AND is_deleted = FALSE
           AND visibility_limit = TRUE
+          ORDER BY votes.start_time DESC
     </select>
 
 
@@ -24,6 +30,7 @@
           FROM votes
         WHERE is_deleted = FALSE
         AND visibility_limit = TRUE
+        ORDER BY votes.start_time DESC
     </select>
 
 
