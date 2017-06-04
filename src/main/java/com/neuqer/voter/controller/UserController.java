@@ -50,7 +50,7 @@ public class UserController {
 
     @RequestMapping(path = "/verify", method = RequestMethod.POST)
     public Response getVerifyCode(
-            @RequestBody @Valid VerifyCodeRequest request) throws BaseException {
+            @RequestBody @Valid VerifyCodeRequest request) throws Exception {
         int type = request.getType();
 
         String mobile = request.getMobile();
@@ -63,12 +63,12 @@ public class UserController {
             throw new IllegalTypeException();
 
 
-        VerifyResponse response = new VerifyResponse("1234");
+        String code = verifyCodeService.sendVerifyCode(mobile, type);
 
-        if (verifyCodeService.sendVerifyCode(mobile, type))
-            return new Response(0,response);
+        VerifyResponse response = new VerifyResponse(code);
 
-        throw new UnknownException();
+        return new Response(0,response);
+
     }
     /**
      * 用户登录

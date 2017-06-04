@@ -97,6 +97,7 @@ public class VoteRecord {
                 ", createAt=" + createAt +
                 ", updateAt=" + updateAt +
                 ", userId=" + userId +
+                ", title='" + title + '\'' +
                 '}';
     }
 }

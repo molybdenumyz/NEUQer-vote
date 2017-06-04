@@ -28,5 +28,6 @@
 		FROM vote_records,problem_options
 		WHERE vote_records.vote_id = #{voteId} and user_id = #{userId}
 		and vote_records.vote_id = problem_options.vote_id
+		and vote_records.option_id = problem_options.id
 	</select>
 </mapper>

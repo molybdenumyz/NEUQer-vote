@@ -10,7 +10,7 @@ import com.neuqer.voter.exception.VerifyCode.VerifyCodeTimeOutException;
  */
 
 public interface VerifyCodeService {
-    boolean sendVerifyCode(String mobile,int type) throws UserNotExistException, UserExistedException;
+    String sendVerifyCode(String mobile,int type) throws Exception;
 
     boolean checkVerifyCode(String mobile,int type,String code) throws IllegalVerfyCodeException, VerifyCodeTimeOutException;
 

@@ -1,9 +1,11 @@
 package com.neuqer.voter.service.impl;
 
+import com.neuqer.voter.common.SmsSender;
 import com.neuqer.voter.common.Utils;
 import com.neuqer.voter.domain.User;
 import com.neuqer.voter.domain.VerifyCode;
 import com.neuqer.voter.exception.BaseException;
+import com.neuqer.voter.exception.UnknownException;
 import com.neuqer.voter.exception.User.UserExistedException;
 import com.neuqer.voter.exception.User.UserNotExistException;
 import com.neuqer.voter.exception.VerifyCode.IllegalVerfyCodeException;
@@ -25,6 +27,8 @@ public class VerifyCodeServiceImpl implements VerifyCodeService{
     @Autowired
     private UserService userService;
 
+
+
     /**
      *
      * @param mobile
@@ -33,11 +37,11 @@ public class VerifyCodeServiceImpl implements VerifyCodeService{
      * @throws BaseException
      */
     @Override
-    public boolean sendVerifyCode(String mobile,int type) throws UserNotExistException, UserExistedException {
-        //String code  = Utils.createVerifyCode(); 假装在发送验证码
-        String code = "1234";
-        User user = userService.getUserByMobile(mobile);
+    public String sendVerifyCode(String mobile,int type) throws Exception {
+        String code  = Utils.createVerifyCode();
 
+        User user = userService.getUserByMobile(mobile);
+        SmsSender smsSender = new SmsSender();
         if(type == 1) {
 
             if (user != null) {
@@ -51,7 +55,16 @@ public class VerifyCodeServiceImpl implements VerifyCodeService{
                 throw new UserNotExistException();
         }
 
-        return updateVerifyCode(mobile,type,code);
+        String result = smsSender.Sender(mobile,code);
+
+        if (!(result.indexOf(",0")>=0)){
+            throw new UnknownException("Can't send message");
+        }
+        if (!(updateVerifyCode(mobile,type,code))){
+            throw new UnknownException("Can't send message");
+        }
+
+        return code;
      }
 
     @Override
@@ -81,7 +94,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService{
             checkVerifyCode.setExpireAt(Utils.createTimeStamp()+300000);
             flag = verifyCodeMapper.addVerifyCode(checkVerifyCode);
         } else {
-            //verifyCode.setCode(code);
+            verifyCode.setCode(code);
             verifyCode.setExpireAt(Utils.createTimeStamp()+300000);
             flag = verifyCodeMapper.updateVerifyCode(verifyCode);
         }
