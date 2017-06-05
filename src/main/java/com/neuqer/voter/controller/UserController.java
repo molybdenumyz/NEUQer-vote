@@ -63,12 +63,12 @@ public class UserController {
             throw new IllegalTypeException();
 
 
+
         String code = verifyCodeService.sendVerifyCode(mobile, type);
 
         VerifyResponse response = new VerifyResponse(code);
 
         return new Response(0,response);
-
     }
     /**
      * 用户登录
@@ -130,12 +130,13 @@ public class UserController {
          */
         if (!verifyCodeService.checkVerifyCode(mobile,1,code))
             throw new IllegalVerfyCodeException();
+
         String password = request.getPassword();
         User user = new User();
         user.setName(null);
         user.setMobile(request.getMobile());
         user.setPassword(request.getPassword());
-
+        user.setStatus(1);
         userService.registerUser(user);
 
         return new Response(0, null);

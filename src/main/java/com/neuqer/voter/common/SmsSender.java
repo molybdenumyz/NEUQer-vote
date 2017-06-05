@@ -15,8 +15,9 @@ public class SmsSender {
         String url = "http://zapi.253.com/msg/HttpBatchSendSM?account={account}&pswd={pswd}&mobile={mobile}&msg={msg}";
         String message = "【NEUQer】欢迎使用投票服务，您的验证码："+code+"，有效期五分钟";
         Map<String, Object> urlVariables = new HashMap<String, Object>();
-        urlVariables.put("account", "N4129357");
-        urlVariables.put("pswd","yC7o2HZ6RF8d7a");
+        urlVariables.put("account", "xxx" +
+                "");
+        urlVariables.put("pswd","xxx");
         urlVariables.put("mobile",mobile);
         urlVariables.put("msg", message);
 
