@@ -1,9 +1,8 @@
 package com.neuqer.voter.exception;
 
 /**
- * Created by lumin on 17/3/16.
+ * Created by yinzhe on 17/5/17.
  */
-
 public abstract class BaseException extends RuntimeException{
     private int code;
 

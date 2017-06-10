@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartException;
 
 
 /**
- * Created by lumin on 17/3/17.
+ * Created by yinzhe on 17/5/17.
  */
 @ControllerAdvice
 public class GlobalExceptionHandler {

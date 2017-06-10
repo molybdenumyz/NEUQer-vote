@@ -3,7 +3,7 @@ package com.neuqer.voter.exception.User;
 import com.neuqer.voter.exception.BaseException;
 
 /**
- * Created by Lim on 17/3/16.
+ * Created by yinzhe on 17/5/17.
  */
 public class PasswordErrorException extends BaseException {
     public PasswordErrorException(){

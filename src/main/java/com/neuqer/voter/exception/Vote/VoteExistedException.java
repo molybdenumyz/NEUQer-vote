@@ -3,7 +3,7 @@ package com.neuqer.voter.exception.Vote;
 import com.neuqer.voter.exception.BaseException;
 
 /**
- * Created by Hotown on 17/3/19.
+ * Created by yinzhe on 17/5/17.
  */
 public class VoteExistedException extends BaseException{
     public VoteExistedException() {

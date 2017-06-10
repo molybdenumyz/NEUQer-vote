@@ -5,7 +5,7 @@ import com.neuqer.voter.exception.BaseException;
 import java.util.UUID;
 
 /**
- * Created by lumin on 17/3/17.
+ * Created by yinzhe on 17/5/17.
  */
 public class NeedLoginException extends BaseException{
     public NeedLoginException(){

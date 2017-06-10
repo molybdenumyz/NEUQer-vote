@@ -42,7 +42,7 @@
         SELECT votes.id,votes.title,votes.creator_id,votes.start_time,votes.end_time,type,votes.max,mobile,participator_num,votes.updated_at,visibility_limit
         FROM votes,users
         WHERE votes.is_deleted = FALSE AND votes.creator_id = users.id
-        ORDER BY votes.start_time DESC
+        ORDER BY votes.id DESC
     </select>
     
     <select id="findLike" parameterType="com.neuqer.voter.dto.request.FindLikeRequest" resultType="com.neuqer.voter.domain.VoteNeed">
@@ -69,7 +69,7 @@
                 AND #{now} &gt; end_time
             </if>
         </where>
-        ORDER BY votes.start_time DESC
+        ORDER BY votes.id DESC
     </select>
     
     <insert id="createVote" parameterType="com.neuqer.voter.domain.Vote" useGeneratedKeys="true" keyProperty="id">
