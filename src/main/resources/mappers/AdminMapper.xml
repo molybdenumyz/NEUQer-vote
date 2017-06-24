@@ -79,6 +79,30 @@
         (#{title}, #{description}, #{anonymous}, #{participatorLimit}, #{visibilityLimit}, #{startTime}, #{endTime}, #{creatorId}, #{createdAt}, #{updatedAt}, #{password},#{type},#{max});
     </insert>
 
+    <insert id="createMarking" parameterType="com.neuqer.voter.domain.Maring" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO maring
+        (title,score, create_at)
+        VALUES
+        (#{title},#{score},#{createAt});
+    </insert>
+
+    <insert id="createProject" parameterType="com.neuqer.voter.domain.Project" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO project
+        (name_zh, name_eg, stu_id, stu_name, hold, create_at)
+        VALUES
+        (#{name_zh},#{name_eg},#{stu_id},#{stu_name},#{hold},#{create_at})
+    </insert>
+    <insert id="createActivity" parameterType="com.neuqer.voter.domain.Activity" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO activity
+        (title, start_time, end_time, visibility) VALUES
+        (#{title},#{start_time},#{end_time},#{visibility})
+    </insert>
+
+    <select id="getActivity" parameterType="Long" resultType="String">
+        SELECT title
+        FROM activity
+        WHERE id = #{id}
+    </select>
     <update id="updateVoteTitle">
         UPDATE votes SET
         title = #{title}
@@ -176,5 +200,11 @@
         title=#{title}
         WHERE vote_id = #{voteId} AND id = #{id}
     </update>
+
+    <select id="getProject" parameterType="Long" resultType="com.neuqer.voter.domain.Project">
+        SELECT * FROM project
+        WHERE id = #{id}
+    </select>
+
 
 </mapper>

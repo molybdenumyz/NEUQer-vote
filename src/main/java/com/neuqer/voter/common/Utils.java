@@ -27,9 +27,47 @@ public class Utils {
             ra = new Random();
         StringBuilder vc = new StringBuilder();
         for (int i = 0; i < size; i++) {
-            vc.append(ra.nextInt(10));
+            int a = ra.nextInt(10);
+            System.out.println(a);
+            if ((a == 0) && (i == 0))
+            {
+                i= i -1;
+                continue;
+            }
+            else
+            vc.append(a);
         }
         return vc.toString();
 
+    }
+    public static String createUserName(){
+        String base = "abcdefghijklmnopqrstuvwxyz123456789";
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < 6; i++) {
+            int number = random.nextInt(base.length());
+            sb.append(base.charAt(number));
+        }
+        return sb.toString();
+    }
+    public static String createUserPassword(){
+        String base = "123456789";
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < 5; i++) {
+            int number = random.nextInt(base.length());
+            sb.append(base.charAt(number));
+        }
+        return sb.toString();
+    }
+    public static String createRobotMobile(){
+        String base = "345678";
+        Random random = new Random();
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < 11; i++) {
+            int number = random.nextInt(base.length());
+            sb.append(base.charAt(number));
+        }
+        return sb.toString();
     }
 }

@@ -20,8 +20,10 @@ public interface UserService {
 
     void registerUser(User user) throws BaseException;
 
+    User registerRorbotUser(User user);
     User loginUser(String userMobile,String password) throws BaseException;
 
+    User loginTeacher(String name,String password);
     boolean updateUser(User user);
 
     boolean forgetPassword(String mobile, String password) throws BaseException;

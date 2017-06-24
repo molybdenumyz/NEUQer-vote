@@ -63,9 +63,37 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User registerRorbotUser(User user) {
+        user.setMobile(Utils.createRobotMobile());
+        user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+
+        long currentTime = Utils.createTimeStamp();
+        user.setCreatedAt(currentTime);
+        user.setUpdatedAt(currentTime);
+        int row = userMapper.createUser(user);
+
+        if (row != 1) {
+            throw new UnknownException("Fail to create user");
+        }
+
+        return user;
+    }
+
+    @Override
     public User loginUser(String mobile, String password) throws BaseException {
         User user = userMapper.getUserByMobile(mobile);
 
+        if (user == null) {
+            throw new UserNotExistException();
+        } else if (!BCrypt.checkpw(password, user.getPassword())) {
+            throw new PasswordErrorException();
+        }
+        return user;
+    }
+
+    @Override
+    public User loginTeacher(String name, String password) {
+        User user = userMapper.getUserByName(name);
         if (user == null) {
             throw new UserNotExistException();
         } else if (!BCrypt.checkpw(password, user.getPassword())) {

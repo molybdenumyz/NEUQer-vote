@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.neuqer.voter.mapper.RelationMapper">
+
+
+   <insert id="createVoteProjectRelation" parameterType="com.neuqer.voter.domain.VoteProjectRelation" useGeneratedKeys="true" keyProperty="id">
+       INSERT INTO vote_project
+       (vote_id,pro_id)
+       VALUES
+       (#{voteId},#{proId})
+   </insert>
+
+    <insert id="createVoteMaringRelation" parameterType="com.neuqer.voter.domain.VoteMaringRelation" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vote_maring
+        (vote_id, maring_id)
+        VALUES
+        (#{voteId},#{maringId})
+    </insert>
+
+    <insert id="createVoteTeacherRelation" parameterType="com.neuqer.voter.domain.VoteTeacherRelation" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO vote_teacher
+        (user_id, vote_id) VALUES
+        (#{userId},#{voteId})
+    </insert>
+
+    <insert id="createActivityMaringRelation" parameterType="com.neuqer.voter.domain.ActivityMaringRelation" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO activity_maring
+        (activity_id, maring_id)
+         VALUES
+         (#{activityId},#{maringId})
+    </insert>
+    <insert id="createActivityProjectRelation" parameterType="com.neuqer.voter.domain.ActivityProject">
+        INSERT INTO activity_project
+        (activity_id, project_id)
+        VALUES
+        (#{activityId},#{projectId})
+    </insert>
+    <select id="findProjectIdByVoteId" parameterType="Long" resultType="Long">
+        SELECT pro_id FROM vote_project
+        WHERE vote_id = #{voteId}
+    </select>
+
+    <select id="findUserByActivityId" parameterType="Long" resultType="Long">
+        SELECT user_id FROM vote_teacher
+        WHERE vote_id IN (SELECT vote_id FROM vote_maring WHERE
+        maring_id IN (SELECT maring_id FROM activity_maring WHERE activity_id = #{acId}))
+    </select>
+
+    <select id="findStaticsByUserId" parameterType="Long" resultType="com.neuqer.voter.domain.Statis">
+        SELECT title,"value",
+        FROM derecord LEFT JOIN maring
+        where maring.id = derecord.maring_id
+        AND user_id = #{userId} AND project_id = #{proId}
+    </select>
+
+    <select id="findProIdByAcId" resultType="com.neuqer.voter.domain.Project">
+        SELECT project_id FROM activity_project LEFT JOIN project
+        WHERE activity_project.project_id = project.id and activity_id = #{acId}
+      </select>
+</mapper>

@@ -1,9 +1,6 @@
 package com.neuqer.voter.mapper;
 
-import com.neuqer.voter.domain.Option;
-import com.neuqer.voter.domain.UpdateVote;
-import com.neuqer.voter.domain.Vote;
-import com.neuqer.voter.domain.VoteNeed;
+import com.neuqer.voter.domain.*;
 import com.neuqer.voter.dto.request.FindLikeRequest;
 import org.apache.ibatis.annotations.Param;
 
@@ -22,9 +19,10 @@ public interface AdminMapper {
     List<Vote> getVoteByCreator(@Param("creatorId") long creatorId);
     List<VoteNeed> getAllVote();
     Vote getVoteByTitle(@Param("title") String title);
-
+    Integer createProject(Project project);
     Integer createVote(Vote vote);
-
+    Integer createMarking(Maring maring);
+    Integer createActivity(Activity activity);
     Integer updateVoteTitle(@Param("id") long id, @Param("title") String title);
     Integer updateVotePassword(@Param("id") long id, @Param("password") String password);
     Integer updateVoteParticipatorLimit(@Param("id") long id, @Param("participatorLimit") int participatorLimit);
@@ -50,4 +48,8 @@ public interface AdminMapper {
     Integer updateVoteOption(Option option);
 
     List<VoteNeed> findLike(FindLikeRequest findLikeRequest);
+
+    String getActivity(@Param("id") long id);
+
+    Project getProject(@Param("id") long id);
 }

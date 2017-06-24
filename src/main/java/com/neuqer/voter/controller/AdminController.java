@@ -20,6 +20,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,6 +53,11 @@ public class AdminController {
     @Autowired
     private TokenService tokenService;
 
+    @Autowired
+    private UserService userService;
+
+    @Autowired
+    private RelationService relationService;
     private Logger logger = LoggerFactory.getLogger(AdminController.class);
 
     final static int MAX_NUMBER = 100;
@@ -90,6 +96,7 @@ public class AdminController {
 
 
         vote.setType(voteCreateRequest.getType());
+
         if (voteCreateRequest.getType() == 1)
             vote.setMax(1);
         else if (voteCreateRequest.getType() == 2)
@@ -365,5 +372,162 @@ public class AdminController {
         return new Response(0, response);
 
     }
+
+    /**
+     * 1.创建小项,活动，关联
+     * 2.导入项目信息，生成对应的投票
+     * 3.导入评委
+     * 4.关联评委和投票
+     */
+    @Transactional
+    @RequestMapping(path = "/createMarking",method = RequestMethod.POST)
+    public Response createMarking(@RequestBody @Valid MarkingRequest markingRequest,HttpServletRequest request){
+        User user = (User) request.getAttribute("user");
+
+        boolean admin = adminService.isAdmin(user.getId());
+        if (!admin) {
+            throw new NoPermissonException();
+        }
+
+        List<Long> maringIds = new ArrayList<>();
+        Activity activity = new Activity();
+        activity.setTitle(markingRequest.getTitle());
+        activity.setStartTime(markingRequest.getStart_time());
+        activity.setEndTime(markingRequest.getEnd_time());
+        activity.setVisibility(true);
+        activity = adminService.createActivity(activity);
+
+        for (Maring maring:markingRequest.getMakingList()
+             ) {
+            maring = optionService.createMaring(maring);
+
+            maringIds.add(maring.getId());
+            ActivityMaringRelation activityMaringRelation = new ActivityMaringRelation();
+            activityMaringRelation.setActivityId(activity.getId());
+            activityMaringRelation.setMaringId(maring.getId());
+            relationService.createActivityMaringRelation(activityMaringRelation);
+        }
+
+        MaringResponse maringResponse = new MaringResponse(activity.getId(),maringIds);
+
+        return new Response(0,maringResponse);
+
+    }
+    @Transactional
+    @RequestMapping(path = "uploadProject",method = RequestMethod.POST)
+    public Response uploadProject(@RequestBody @Valid ProjectRequest projectRequest,HttpServletRequest request){
+        User user = (User) request.getAttribute("user");
+
+        boolean admin = adminService.isAdmin(user.getId());
+        if (!admin) {
+            throw new NoPermissonException();
+        }
+
+        List<Long> voteIds = new ArrayList<>();
+        for (Project project:projectRequest.getProjectList()
+             ) {
+
+                Vote vote = new Vote();
+                vote.setTitle(project.getStuId()+project.getStuName()+":"+project.getNameZh());
+                vote.setStartTime(projectRequest.getStartTime());
+                vote.setEndTime(projectRequest.getEndTime());
+                vote.setCreatorId(user.getId());
+
+                vote.setType(5);
+
+                vote.setMax(projectRequest.getMaringId().size());
+                vote.setParticipatorLimit(10000);
+
+                vote.setPassword(null);
+                vote.setDescription(null);
+                vote.setVisibilityLimit(true);
+                vote.setAnonymous(false);
+                vote = adminService.createVote(user.getId(), vote);
+
+                project = adminService.createProject(project);
+
+            for (Long mId:projectRequest.getMaringId()
+                 ) {
+                VoteMaringRelation voteMaringRelation = new VoteMaringRelation();
+                voteMaringRelation.setMaringId(mId);
+                voteMaringRelation.setVoteId(vote.getId());
+                relationService.createVoteMaringRelation(voteMaringRelation);
+            }
+
+                VoteProjectRelation voteProjectRelation = new VoteProjectRelation();
+                voteProjectRelation.setProId(project.getId());
+                voteProjectRelation.setVoteId(vote.getId());
+                relationService.createVoteProjectRelation(voteProjectRelation);
+
+                ActivityProject activityProject = new ActivityProject();
+                activityProject.setActivityId(projectRequest.getActivityId());
+                activityProject.setProjectId(project.getId());
+                relationService.createActivityProjectRelation(activityProject);
+
+                voteIds.add(vote.getId());
+        }
+            ProVoteResponse proVoteResponse = new ProVoteResponse();
+            proVoteResponse.setVoteIds(voteIds);
+        return new Response(0,proVoteResponse);
+    }
+    @Transactional
+    @RequestMapping(path = "/createUsers",method = RequestMethod.POST)
+    public Response createUsers(@RequestBody JSONObject jsonObject,HttpServletRequest request){
+        User user = (User) request.getAttribute("user");
+
+        boolean admin = adminService.isAdmin(user.getId());
+        if (!admin) {
+            throw new NoPermissonException();
+        }
+        Integer number = jsonObject.getInteger("num");
+        List<Teacher> teachers = new ArrayList<>();
+        for (int i =0; i<number;i++){
+            String name = Utils.createUserName();
+            String password = Utils.createUserPassword();
+            Teacher teacher = new Teacher();
+            teacher.setUsername(name);
+            teacher.setPassword(password);
+            User user1 = new User();
+            user1.setStatus(3);
+            user1.setName(name);
+            user1.setPassword(password);
+            user1 = userService.registerRorbotUser(user);
+            teacher.setId(user1.getId());
+            teachers.add(teacher);
+        }
+        TeacherResponse response = new TeacherResponse();
+        response.setTeachers(teachers);
+        return new Response(0,response);
+    }
+
+    @Transactional
+    @RequestMapping(path = "/RelationVote",method = RequestMethod.POST)
+    public Response RelationVote(@RequestBody RelationRequest relationRequest,HttpServletRequest request){
+        User user = (User) request.getAttribute("user");
+
+        boolean admin = adminService.isAdmin(user.getId());
+        if (!admin) {
+            throw new NoPermissonException();
+        }
+
+        for (Teacher teacher:relationRequest.getTeachers()){
+            for (Long vid:relationRequest.getVoteIds()){
+                VoteTeacherRelation voteTeacherRelation = new VoteTeacherRelation();
+                voteTeacherRelation.setUserId(teacher.getId());
+                voteTeacherRelation.setVoteId(vid);
+                relationService.createVoteTeacherRelation(voteTeacherRelation);
+            }
+        }
+
+        return new Response(0,null);
+    }
+
+    @RequestMapping(path = "/{activityId}/statistics",method = RequestMethod.GET)
+    public Response Statistics(@PathVariable("activityId") long activityId){
+        String name = adminService.getActivityName(activityId);
+
+        return new Response(0,adminService.statis(name,activityId));
+    }
+
 
 }

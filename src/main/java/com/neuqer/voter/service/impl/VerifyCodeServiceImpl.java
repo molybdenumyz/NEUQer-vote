@@ -55,12 +55,29 @@ public class VerifyCodeServiceImpl implements VerifyCodeService{
                 throw new UserNotExistException();
         }
 
-        String result = smsSender.Sender(mobile,code);
+        VerifyCode checkVerifyCode = new VerifyCode(mobile, type);
 
-        if (!(result.indexOf(",0")>=0)){
-            throw new UnknownException("Can't send message");
-        }
-        if (!(updateVerifyCode(mobile,type,code))){
+        VerifyCode verifyCode = verifyCodeMapper.getVerifyCode(checkVerifyCode);
+
+//        if (verifyCode != null){
+//            long now = Utils.createTimeStamp();
+//            if ((now -40000)< verifyCode.getUpdateAt())
+//                throw new UnknownException("验证码两次时间间隔过短");
+//            if (verifyCode.getNum() > 5){
+//                if (verifyCode.getUpdateAt() + 86400000 > now)
+//                    throw new UnknownException("一天请求次数有限");
+//            }
+//        }
+
+        checkVerifyCode.setCode(code);
+       // String result = smsSender.Sender(mobile,code);
+
+       // System.out.println(result);
+
+       // if (!(result.indexOf(",0")>=0)){
+      //      throw new UnknownException("Can't send message");
+      //  }
+        if (!(updateVerifyCode(verifyCode,checkVerifyCode))){
             throw new UnknownException("Can't send message");
         }
 
@@ -85,18 +102,32 @@ public class VerifyCodeServiceImpl implements VerifyCodeService{
     }
 
     @Override
-    public boolean updateVerifyCode(String mobile, int type, String code) {
-        VerifyCode checkVerifyCode = new VerifyCode(mobile, type, code);
-        VerifyCode verifyCode = verifyCodeMapper.getVerifyCode(checkVerifyCode);
+    public boolean updateVerifyCode(VerifyCode verifyCode,VerifyCode checkVerifyCode) {
+        long now = Utils.createTimeStamp();
       boolean flag = false;
         if (verifyCode == null) {
-
-            checkVerifyCode.setExpireAt(Utils.createTimeStamp()+300000);
+            checkVerifyCode.setUpdateAt(now);
+            checkVerifyCode.setExpireAt(now+300000);
+            checkVerifyCode.setNum(1);
+            System.out.println(checkVerifyCode);
             flag = verifyCodeMapper.addVerifyCode(checkVerifyCode);
         } else {
-            verifyCode.setCode(code);
-            verifyCode.setExpireAt(Utils.createTimeStamp()+300000);
-            flag = verifyCodeMapper.updateVerifyCode(verifyCode);
+            verifyCode.setCode(checkVerifyCode.getCode());
+            verifyCode.setUpdateAt(now);
+            verifyCode.setExpireAt(now+300000);
+            Integer nowNum = verifyCode.getNum();
+
+            if (now - verifyCode.getUpdateAt() < 86400000)
+            {
+                verifyCode.setNum(nowNum+1);
+                flag = verifyCodeMapper.updateVerifyCode(verifyCode);
+            }
+
+            else {
+                verifyCode.setNum(1);
+                verifyCode.setUpdateAt(now);
+                flag = verifyCodeMapper.updateVerifyCode(verifyCode);
+            }
         }
         return flag;
     }

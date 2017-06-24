@@ -11,4 +11,6 @@ public interface VerifyCodeMapper {
     VerifyCode getVerifyCode(VerifyCode verifyCode);
 
     boolean updateVerifyCode(VerifyCode verifyCode);
+
+    Integer deleteVerifyCode(VerifyCode verifyCode);
 }

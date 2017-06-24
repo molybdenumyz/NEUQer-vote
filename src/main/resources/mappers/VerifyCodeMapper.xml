@@ -5,9 +5,9 @@
 
     <insert id="addVerifyCode" parameterType="com.neuqer.voter.domain.VerifyCode">
         INSERT INTO verify_codes
-        (mobile, type, code,expire_at)
+        (mobile, type, code,expire_at,update_at,num)
         VALUES (${mobile}, ${type},${code},
-        ${expireAt})
+        ${expireAt},${updateAt},${num})
     </insert>
 
     <select id="getVerifyCode" resultType="com.neuqer.voter.domain.VerifyCode" parameterType="com.neuqer.voter.domain.VerifyCode">
@@ -18,8 +18,18 @@
 
     <update id="updateVerifyCode" parameterType="com.neuqer.voter.domain.VerifyCode">
         UPDATE votecopy.verify_codes
-        SET expire_at= ${expireAt}
+        SET expire_at= ${expireAt},
+            num=${num},
+            update_at = ${updateAt},
+            code=${code}
         WHERE mobile = '${mobile}'
         AND type = '${type}'
     </update>
+    
+    <delete id="deleteVerifyCode" parameterType="com.neuqer.voter.domain.VerifyCode">
+        DELETE
+        FROM verify_codes
+        WHERE mobile = ${mobile}
+        AND type = ${type}
+    </delete>
 </mapper>

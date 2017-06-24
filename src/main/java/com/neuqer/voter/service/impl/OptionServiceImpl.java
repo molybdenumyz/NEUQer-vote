@@ -1,9 +1,11 @@
 package com.neuqer.voter.service.impl;
 
+import com.neuqer.voter.domain.Maring;
 import com.neuqer.voter.domain.Option;
 import com.neuqer.voter.exception.BaseException;
 import com.neuqer.voter.exception.Option.OptionNotExistException;
 import com.neuqer.voter.exception.UnknownException;
+import com.neuqer.voter.mapper.AdminMapper;
 import com.neuqer.voter.mapper.OptionMapper;
 import com.neuqer.voter.service.CreatorService;
 import com.neuqer.voter.service.OptionService;
@@ -21,7 +23,8 @@ public class OptionServiceImpl implements OptionService {
     @Autowired
     private OptionMapper optionMapper;
 
-
+    @Autowired
+    private AdminMapper adminMapper;
     @Override
     public List<Option> listOptions( long voteId) throws BaseException {
 
@@ -44,5 +47,13 @@ public class OptionServiceImpl implements OptionService {
         }
     }
 
+    @Override
+    public Maring createMaring(Maring maring) {
+        int row = adminMapper.createMarking(maring);
 
+        if (row < 1){
+            throw new UnknownException("创建打分小项失败");
+        }else
+            return maring;
+    }
 }

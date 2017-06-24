@@ -14,7 +14,7 @@ public interface UserMapper {
     User getUserWithTrashed(@Param("id") long id);
 
     User getUserByMobile(@Param("mobile") String mobile);
-
+    User getUserByName(@Param("name") String name);
     Integer createUser(User user);
 
     Integer deleteUser(@Param("id") long id);

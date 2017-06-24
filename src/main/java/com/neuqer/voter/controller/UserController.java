@@ -2,7 +2,9 @@ package com.neuqer.voter.controller;
 
 import com.alibaba.fastjson.JSONObject;
 import com.neuqer.voter.common.Response;
+import com.neuqer.voter.common.Utils;
 import com.neuqer.voter.common.Validator;
+import com.neuqer.voter.domain.Teacher;
 import com.neuqer.voter.domain.Token;
 import com.neuqer.voter.domain.User;
 import com.neuqer.voter.domain.VerifyCode;
@@ -20,6 +22,7 @@ import com.neuqer.voter.exception.VerifyCode.VerifyCodeTimeOutException;
 import com.neuqer.voter.service.TokenService;
 import com.neuqer.voter.service.UserService;
 import com.neuqer.voter.service.VerifyCodeService;
+import com.sun.org.apache.regexp.internal.RE;
 import org.apache.ibatis.annotations.ResultMap;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by yinzhe on 17/5/9.
@@ -264,6 +269,33 @@ public class UserController {
             throw new IllegalVerfyCodeException();
 
         userService.changeMobile(oldMobile,newMobile,password);
+
+        return new Response(0,null);
+    }
+
+    @RequestMapping(path = "teacherLogin",method = RequestMethod.POST)
+    public Response teacherLogin(@RequestBody JSONObject jsonObject){
+        String name = jsonObject.getString("name");
+        String password = jsonObject.getString("password");
+
+        User user = userService.loginTeacher(name,password);
+        Token token = tokenService.generateToken(user.getId(), 1, "unknown");
+        UserLoginResponse response = new UserLoginResponse(user, token.getToken());
+
+        return new Response(0, response);
+    }
+
+    @RequestMapping(path = "perfectInfo",method = RequestMethod.POST)
+    public Response perfectInfo(@RequestBody JSONObject jsonObject,HttpServletRequest httpServletRequest){
+        User user = (User)httpServletRequest.getAttribute("user");
+
+        String trueName = jsonObject.getString("trueName");
+        String mobile = jsonObject.getString("mobile");
+
+        user.setMobile(mobile);
+        user.setTrueName(trueName);
+
+        userService.updateUser(user);
 
         return new Response(0,null);
     }

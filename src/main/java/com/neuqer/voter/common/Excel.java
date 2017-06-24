@@ -48,7 +48,7 @@ public class Excel {
             HSSFRow hssfRow = sheet.createRow(i);
             i++;
             HSSFCell cell_1 = hssfRow.createCell(0);
-            cell_1.setCellValue(option.getId());
+            cell_1.setCellValue(i-1);
             HSSFCell cell_2 = hssfRow.createCell(1);
             cell_2.setCellValue(option.getTitle());
             HSSFCell cell_3 = hssfRow.createCell(2);

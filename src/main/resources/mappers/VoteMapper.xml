@@ -60,4 +60,5 @@
         (#{title}, #{description}, #{anonymous}, #{participatorLimit}, #{visibilityLimit}, #{startTime}, #{endTime}, #{creatorId}, #{createdAt}, #{updatedAt}, #{password},#{type},#{max});
     </insert>
 
+
 </mapper>

@@ -8,6 +8,8 @@ public class VerifyCode  {
    private Integer type;
    private String code;
    private long expireAt;
+   private long updateAt;
+   private Integer num;
 
     public VerifyCode(){
 
@@ -19,12 +21,17 @@ public class VerifyCode  {
         this.expireAt = expireAt;
     }
 
-    public VerifyCode(String mobile, int type, String code) {
+    public VerifyCode(String mobile, int type) {
+        this.mobile = mobile;
+        this.type = type;
+
+    }
+
+    public VerifyCode(String mobile,int type,String code){
         this.mobile = mobile;
         this.type = type;
         this.code = code;
     }
-
 
 
     public String getMobile() {
@@ -60,6 +67,26 @@ public class VerifyCode  {
         this.expireAt = expireAt;
     }
 
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
+    public long getUpdateAt() {
+        return updateAt;
+    }
+
+    public void setUpdateAt(long updateAt) {
+        this.updateAt = updateAt;
+    }
+
+    public Integer getNum() {
+        return num;
+    }
+
+    public void setNum(Integer num) {
+        this.num = num;
+    }
+
     @Override
     public String toString() {
         return "VerifyCode{" +
@@ -67,6 +94,8 @@ public class VerifyCode  {
                 ", type=" + type +
                 ", code='" + code + '\'' +
                 ", expireAt=" + expireAt +
+                ", updateAt=" + updateAt +
+                ", num=" + num +
                 '}';
     }
 }

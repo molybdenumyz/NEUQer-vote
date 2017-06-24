@@ -15,6 +15,16 @@ public class User {
     private long createdAt;
     private long updatedAt;
     private boolean isDeleted;
+    private String trueName;
+
+
+    public String getTrueName() {
+        return trueName;
+    }
+
+    public void setTrueName(String trueName) {
+        this.trueName = trueName;
+    }
 
     public long getId() {
         return id;

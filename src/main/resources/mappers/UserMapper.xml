@@ -22,7 +22,11 @@
         WHERE mobile = #{mobile};
     </select>
 
-
+    <select id="getUserByName" resultType="User">
+        SELECT *
+        FROM users
+        WHERE name = #{name}
+    </select>
     <!--设置获取自增主键-->
     <insert id="createUser" parameterType="User" useGeneratedKeys="true" keyProperty="id">
         INSERT INTO users (name,mobile,password,status,created_at,updated_at)

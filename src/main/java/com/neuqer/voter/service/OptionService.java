@@ -1,5 +1,6 @@
 package com.neuqer.voter.service;
 
+import com.neuqer.voter.domain.Maring;
 import com.neuqer.voter.domain.Option;
 import com.neuqer.voter.exception.BaseException;
 
@@ -17,4 +18,5 @@ public interface OptionService {
     List<Option> createOption(long userId, long voteId, List<Option> options) throws BaseException;
 
 
+    Maring createMaring(Maring maring);
 }

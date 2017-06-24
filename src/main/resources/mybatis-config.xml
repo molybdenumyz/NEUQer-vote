@@ -24,6 +24,8 @@
         <mapper resource="mappers/OptionMapper.xml"/>
         <mapper resource="mappers/VoteRecordMapper.xml"/>
         <mapper resource="mappers/VerifyCodeMapper.xml"/>
-        <mapper resource="mappers/adminMapper.xml"/>
+        <mapper resource="mappers/AdminMapper.xml"/>
+        <mapper resource="mappers/RelationMapper.xml"/>
+        <mapper resource="mappers/TeacherMapper.xml"/>
     </mappers>
 </configuration>
