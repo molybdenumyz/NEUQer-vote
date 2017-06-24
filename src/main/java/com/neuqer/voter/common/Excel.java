@@ -4,6 +4,7 @@ import java.io.*;
 import java.util.List;
 
 import com.neuqer.voter.domain.Option;
+import com.neuqer.voter.domain.Teacher;
 import com.neuqer.voter.domain.VoteRecord;
 import com.neuqer.voter.dto.request.RecordRequest;
 import com.neuqer.voter.dto.response.OptionValue;
@@ -115,4 +116,35 @@ public class Excel {
         wb.write(os);
 
     }
+
+    public void TeacherExcel(List<Teacher> teachers,OutputStream os) throws IOException {
+        HSSFWorkbook wb = new HSSFWorkbook();
+        HSSFSheet sheet = wb.createSheet("教师账号表");
+
+        HSSFRow row2 = sheet.createRow(0);
+
+        HSSFCell cell2_1 = row2.createCell((short)0);
+        cell2_1.setCellValue("账号");
+
+        HSSFCell cell2_2 = row2.createCell((short)1);
+        cell2_2.setCellValue("密码");
+
+        int i = 1;
+        for (Teacher teacher:teachers
+             ) {
+          HSSFRow row = sheet.createRow(i);
+
+          HSSFCell cell_1 = row.createCell(0);
+
+          HSSFCell cell_2 = row.createCell(1);
+
+          cell_1.setCellValue(teacher.getUsername());
+          cell_2.setCellValue(teacher.getPassword());
+
+          i++;
+        }
+
+        wb.write(os);
+    }
+
 }

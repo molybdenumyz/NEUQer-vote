@@ -5,7 +5,6 @@ package com.neuqer.voter.domain;
  */
 public class Maring {
     private Long id;
-    private Long voteId;
     private String title;
     private Integer score;
     private Long createAt;
@@ -18,13 +17,6 @@ public class Maring {
         this.id = id;
     }
 
-    public Long getVoteId() {
-        return voteId;
-    }
-
-    public void setVoteId(Long voteId) {
-        this.voteId = voteId;
-    }
 
     public String getTitle() {
         return title;

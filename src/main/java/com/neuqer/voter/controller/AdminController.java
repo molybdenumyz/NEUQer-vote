@@ -379,6 +379,23 @@ public class AdminController {
      * 3.导入评委
      * 4.关联评委和投票
      */
+
+    /**
+     * @api{post} /admin/createMarking [创建小项]
+     * @apiName createMarking
+     * @apiGroup Admin
+     * @apiUse TOKEN
+     *
+     * @apiParam {String} title 活动名称 (Not Null)
+     * @apiParam {Number} startTime 开始时间，毫秒级时间戳
+     * @apiParam {Number} endTime 结束时间，毫秒级时间戳
+     * @apiParam {Array} makingList 小项组
+     * @apiParam {String} makingList.title 选项标题
+     * @apiParam {Long} makingList.score 该项所能得到的总分
+     * @apiSuccess (Data) {Number} ActivityId 活动ID
+     * @apiSuccess (Data) {Array} maringIds 小项组的ID
+     * @apiUse CODE_200
+     */
     @Transactional
     @RequestMapping(path = "/createMarking",method = RequestMethod.POST)
     public Response createMarking(@RequestBody @Valid MarkingRequest markingRequest,HttpServletRequest request){
@@ -413,6 +430,9 @@ public class AdminController {
         return new Response(0,maringResponse);
 
     }
+
+
+
     @Transactional
     @RequestMapping(path = "uploadProject",method = RequestMethod.POST)
     public Response uploadProject(@RequestBody @Valid ProjectRequest projectRequest,HttpServletRequest request){
@@ -470,6 +490,8 @@ public class AdminController {
             proVoteResponse.setVoteIds(voteIds);
         return new Response(0,proVoteResponse);
     }
+
+
     @Transactional
     @RequestMapping(path = "/createUsers",method = RequestMethod.POST)
     public Response createUsers(@RequestBody JSONObject jsonObject,HttpServletRequest request){
@@ -500,8 +522,9 @@ public class AdminController {
         return new Response(0,response);
     }
 
+
     @Transactional
-    @RequestMapping(path = "/RelationVote",method = RequestMethod.POST)
+    @RequestMapping(path = "/relationVote",method = RequestMethod.POST)
     public Response RelationVote(@RequestBody RelationRequest relationRequest,HttpServletRequest request){
         User user = (User) request.getAttribute("user");
 
@@ -520,6 +543,31 @@ public class AdminController {
         }
 
         return new Response(0,null);
+    }
+    @Transactional
+    @RequestMapping(path = "/downloadTeachers",method = RequestMethod.POST)
+    public void downloadTea(HttpServletRequest request,HttpServletResponse response,@RequestBody downloadTeachersRequest downloadTeachersRequest) throws IOException {
+        User user = (User) request.getAttribute("user");
+
+        boolean admin = adminService.isAdmin(user.getId());
+        if (!admin) {
+            throw new NoPermissonException();
+        }
+
+        Excel excel = new Excel();
+        FileOutputStream fileOutputStream = null;
+
+        OutputStream os =  response.getOutputStream();
+
+        String fileName = "评委账号"+".xls";
+
+
+        excel.TeacherExcel(downloadTeachersRequest.getTeachers(),os);
+        response.setContentType("application/octet-stream");// 设置强制下载不打开
+        response.addHeader("Content-Disposition",
+                "attachment;fileName=" +  fileName);// 设置文件名
+
+        return;
     }
 
     @RequestMapping(path = "/{activityId}/statistics",method = RequestMethod.GET)
